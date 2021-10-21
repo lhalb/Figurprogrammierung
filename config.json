@@ -1,0 +1,28 @@
+{
+  "settings": {
+    "generate_vec_fig": true,
+    "save_vec_fig": true,
+    "plot_fig": false,
+    "save_plot_fig": false,
+    "save_rest_fig": false,
+    "add_rest": true,
+    "plot_rest": false,
+    "save_only_plot": false
+  },
+  "process": {
+    "pvz": 100,
+    "v": 1430,
+    "v_rast": 20000,
+    "t_rast": 2,
+    "accuracy": 1,
+    "r_min": 0.3,
+    "r_max": 0.85
+  },
+  "filehandling": {
+    "name": "data/testfig.cli",
+    "folder_vec_fig": "output/figures",
+    "folder_plot_fig": "output/plots",
+    "outname": "testfigure"
+  },
+  "layers": [0]
+}
