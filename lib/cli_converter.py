@@ -12,9 +12,10 @@ def load_data(file):
     layers = [int(i.split('/')[1]) for i in lines if 'LAYERS' in i][0]
 
     hatchlines = [i.strip().split(',')[2:] for i in lines if 'HATCHES' in i]
+    polylines = [i.strip().split(',')[3:] for i in lines if 'POLYLINE' in i]
     # hatch_anz = [int(i.split(',')[1]) for i in lines if 'HATCHES' in i]
 
-    return layers, hatchlines
+    return layers, hatchlines, polylines
 
 
 def convert_hatches(layers, hatchlines):

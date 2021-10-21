@@ -153,7 +153,9 @@ class MyApp(QtWidgets.QMainWindow, cli_gui.Ui_MainWindow):
     def load_cli_file(self):
         if self.check_infile():
             fname = self.txt_infile.text()
-            hl, arr = cli.convert_hatches(*cli.load_data(fname))
+            lays, h_list, p_list = cli.load_data(fname)
+
+            hl, arr = cli.convert_hatches(lays, h_list)
             lay = len(hl)
             setattr(self.db, 'hatchlist', hl)
             setattr(self.db, 'arrows', arr)
