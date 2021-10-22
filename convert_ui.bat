@@ -1,0 +1,1 @@
+pyuic5 -x .\cli_conv.ui -o .\cli_gui.py

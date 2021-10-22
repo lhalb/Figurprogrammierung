@@ -155,19 +155,24 @@ class MyApp(QtWidgets.QMainWindow, cli_gui.Ui_MainWindow):
             fname = self.txt_infile.text()
             lays, h_list, p_list = cli.load_data(fname)
 
-            hl, arr = cli.convert_hatches(lays, h_list)
-            lay = len(hl)
-            setattr(self.db, 'hatchlist', hl)
-            setattr(self.db, 'arrows', arr)
-            setattr(self.db, 'layers', lay)
+            setattr(self.db, 'layers', lays)
+            self.set_layer_anz(lays)
 
-            self.set_layer_anz(lay)
+            if p_list is not None:
+                pl, p_arr = cli.convert_polylines(lays, p_list)
+                setattr(self.db, 'polylist', pl)
+                setattr(self.db, 'pl_arrows', p_arr)
+
+            if h_list is not None:
+                hl, arr = cli.convert_hatches(lays, h_list)
+                setattr(self.db, 'hatchlist', hl)
+                setattr(self.db, 'arrows', arr)
 
             name, _ = os.path.splitext(os.path.basename(fname))
 
             self.txt_outname.setText(name)
-            self.txt_save_plot_folder.setText('/output/plots')
-            self.txt_save_vec_folder.setText('/output/figures')
+            self.txt_save_plot_folder.setText('output/plots')
+            self.txt_save_vec_folder.setText('output/figures')
 
         else:
             return False
@@ -185,53 +190,58 @@ class MyApp(QtWidgets.QMainWindow, cli_gui.Ui_MainWindow):
                 return
 
         pvz = int(self.txt_pvz.text())
-        v = float(self.txt_v.text())
+        v_hatch = float(self.txt_v_hatch.text())
+        v_contour = float(self.txt_v_contour.text())
         v_rast = float(self.txt_v_rast.text())
+        build_dimension = float(self.txt_plate_size.text())/2
 
-        for lay in proc_layers:
-            l_name = self.txt_outname.text() + f'_{lay}'
+        for fig_type in ['contours', 'hatches']:
+            for lay in proc_layers:
+                l_name = self.txt_outname.text() + f'_{lay}_{fig_type}'
 
-            outlist = []
-            try:
-                rp_arrows = self.db.rp_arrows[lay]
-                # nehme nur die Startpunkte jedes Pfeils
-                arr_strt = rp_arrows[:, 0, :2].reshape(len(rp_arrows), -1)
-                # nehme die Richtungsvektoren
-                arr_end = rp_arrows[:, :, 2:].reshape(len(rp_arrows), -1)
-                # Füge beide zusammen
-                rp_arr = np.hstack((arr_strt, arr_end))
+                outlist = []
+                if self.db.rp_arrows is not None:
+                    rp_arrows = self.db.rp_arrows[lay]
+                    # nehme nur die Startpunkte jedes Pfeils
+                    arr_strt = rp_arrows[:, 0, :2].reshape(len(rp_arrows), -1)
+                    # nehme die Richtungsvektoren
+                    arr_end = rp_arrows[:, :, 2:].reshape(len(rp_arrows), -1)
+                    # Füge beide zusammen
+                    rp_arr = np.hstack((arr_strt, arr_end))
 
-                # TODO: An dieser Stelle müssen die
-                #  Koordinaten korrekt in Volt umgerechnet werden
-                #  (1V = Wert/Ablenkweite bei 1V)
-                rp_arr_conv = cli.convert_to_volt(rp_arr)
-                vec_rast = cli.generate_vector_data(rp_arr_conv,
-                                                    rest=True,
-                                                    v=v_rast,
+                    rp_arr_conv = cli.convert_to_volt(rp_arr, factor=build_dimension)
+                    vec_rast = cli.generate_hatch_data(rp_arr_conv,
+                                                       rest=True,
+                                                       v=v_rast,
+                                                       pvz=pvz)
+                    outlist.append(vec_rast)
+                else:
+                    pass
+
+                if self.db.pl_arrows is not None or self.db.arrows is not None:
+                    if fig_type == 'contours':
+                        arrow = self.db.pl_arrows[lay]
+                    else:
+                        arrow = self.db.arrows[lay]
+                else:
+                    continue
+
+                arrow_conv = cli.convert_to_volt(arrow, factor=build_dimension)
+                if fig_type == 'contours':
+                    vec = cli.generate_contour_data(arrow_conv,
+                                                    v=v_contour,
                                                     pvz=pvz)
-                outlist.append(vec_rast)
-            except (AttributeError, IndexError, TypeError):
-                pass
-
-            try:
-                arrow = self.db.arrows[lay]
-                # TODO: An dieser Stelle müssen die
-                #  Koordinaten korrekt in Volt umgerechnet werden
-                #  (1V = Wert/Ablenkweite bei 1V)
-                arrow_conv = cli.convert_to_volt(arrow)
-                vec_hatch = cli.generate_vector_data(arrow_conv,
-                                                     v=v,
-                                                     pvz=pvz)
-                outlist.append(vec_hatch)
-                self.show_info_box(f'Vektorfigur erfolgreich erzeugt.')
+                else:
+                    vec = cli.generate_hatch_data(arrow_conv,
+                                                  v=v_hatch,
+                                                  pvz=pvz)
+                outlist.append(vec)
 
                 output = cli.generate_output(outlist)
 
                 cli.write_data(f'{l_name}.bxy', vec_dir, output)
-                self.show_info_box('Datei erfolgreich gespeichert')
 
-            except IndexError:
-                self.show_error_box('Layer nicht in Schichten enthalten')
+            self.show_info_box(f'Datei "{fig_type}" erfolgreich gespeichert')
 
     def debug(self, hidden=False):
         return

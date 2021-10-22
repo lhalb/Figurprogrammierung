@@ -242,6 +242,9 @@ Ruhebereich</string>
                   <height>16777215</height>
                  </size>
                 </property>
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Welcher Layer soll angezeigt/konvertiert werden?&lt;/span&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Eingabemöglichkeiten:&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;x&lt;/span&gt; --&amp;gt; Layer x wird prozessiert &lt;br/&gt;&lt;br/&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;x, y, z&lt;/span&gt; --&amp;gt; Layer x, y, z werden prozessiert&lt;br/&gt;&lt;br/&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;all&lt;/span&gt; --&amp;gt; Alle Layer werden prozessiert&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
                 <property name="text">
                  <string>0</string>
                 </property>
@@ -304,41 +307,82 @@ Ruhebereich</string>
                 <layout class="QVBoxLayout" name="verticalLayout_4">
                  <item>
                   <layout class="QGridLayout" name="gridLayout_5">
-                   <item row="0" column="0" alignment="Qt::AlignRight">
-                    <widget class="QLabel" name="label_6">
-                     <property name="text">
-                      <string>v</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="1" column="2">
-                    <widget class="QLabel" name="label_11">
-                     <property name="text">
-                      <string>ns</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="0" column="2">
+                   <item row="0" column="3">
                     <widget class="QLabel" name="label_7">
                      <property name="text">
                       <string>mm/s</string>
                      </property>
                     </widget>
                    </item>
-                   <item row="1" column="0">
+                   <item row="0" column="0" alignment="Qt::AlignRight">
+                    <widget class="QLabel" name="label_6">
+                     <property name="text">
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;v&lt;span style=&quot; vertical-align:sub;&quot;&gt;H&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="3" column="2">
+                    <widget class="QLineEdit" name="txt_plate_size">
+                     <property name="maximumSize">
+                      <size>
+                       <width>50</width>
+                       <height>16777215</height>
+                      </size>
+                     </property>
+                     <property name="toolTip">
+                      <string>Größe der Bauplattform</string>
+                     </property>
+                     <property name="text">
+                      <string>150</string>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="0">
                     <widget class="QLabel" name="label_10">
                      <property name="text">
                       <string>PVZ</string>
                      </property>
                     </widget>
                    </item>
-                   <item row="1" column="1">
+                   <item row="0" column="2">
+                    <widget class="QLineEdit" name="txt_v_hatch">
+                     <property name="maximumSize">
+                      <size>
+                       <width>50</width>
+                       <height>16777215</height>
+                      </size>
+                     </property>
+                     <property name="toolTip">
+                      <string>Geschwindigkeit des Strahls im Hatch</string>
+                     </property>
+                     <property name="text">
+                      <string>1000</string>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="3">
+                    <widget class="QLabel" name="label_11">
+                     <property name="text">
+                      <string>ns</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="2" column="2">
                     <widget class="QLineEdit" name="txt_pvz">
                      <property name="maximumSize">
                       <size>
                        <width>50</width>
                        <height>16777215</height>
                       </size>
+                     </property>
+                     <property name="toolTip">
+                      <string>Punktverzögerung, die später in der Anlage eingestellt wird</string>
                      </property>
                      <property name="text">
                       <string>100</string>
@@ -348,19 +392,50 @@ Ruhebereich</string>
                      </property>
                     </widget>
                    </item>
-                   <item row="0" column="1">
-                    <widget class="QLineEdit" name="txt_v">
+                   <item row="3" column="0" alignment="Qt::AlignRight">
+                    <widget class="QLabel" name="label_8">
+                     <property name="text">
+                      <string>a</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="3" column="3">
+                    <widget class="QLabel" name="label_9">
+                     <property name="text">
+                      <string>mm</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="2">
+                    <widget class="QLineEdit" name="txt_v_contour">
                      <property name="maximumSize">
                       <size>
                        <width>50</width>
                        <height>16777215</height>
                       </size>
                      </property>
+                     <property name="toolTip">
+                      <string>Geschwindigkeit des Strahls auf der Kontur</string>
+                     </property>
                      <property name="text">
-                      <string>1000</string>
+                      <string>500</string>
                      </property>
                      <property name="alignment">
                       <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="0" alignment="Qt::AlignRight">
+                    <widget class="QLabel" name="label_19">
+                     <property name="text">
+                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;v&lt;span style=&quot; vertical-align:sub;&quot;&gt;C&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="3">
+                    <widget class="QLabel" name="label_20">
+                     <property name="text">
+                      <string>mm/s</string>
                      </property>
                     </widget>
                    </item>
@@ -713,8 +788,10 @@ Ruhebereich</string>
   <tabstop>txt_infile</tabstop>
   <tabstop>but_open</tabstop>
   <tabstop>tabs</tabstop>
-  <tabstop>txt_v</tabstop>
+  <tabstop>txt_v_hatch</tabstop>
+  <tabstop>txt_v_contour</tabstop>
   <tabstop>txt_pvz</tabstop>
+  <tabstop>txt_plate_size</tabstop>
   <tabstop>txt_v_rast</tabstop>
   <tabstop>txt_t_rast</tabstop>
   <tabstop>txt_accuracy</tabstop>
@@ -733,8 +810,8 @@ Ruhebereich</string>
   <tabstop>but_clear_rast</tabstop>
   <tabstop>but_plot</tabstop>
   <tabstop>but_convert_cli</tabstop>
-  <tabstop>but_debug</tabstop>
   <tabstop>but_conv_bxy</tabstop>
+  <tabstop>but_debug</tabstop>
  </tabstops>
  <resources/>
  <connections>

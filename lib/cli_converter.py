@@ -37,6 +37,32 @@ def convert_hatches(layers, hatchlines):
     return hatchlist, arrowlist
 
 
+def convert_polylines(layers, list_of_polylines):
+    # initialisiere die Daten, da mehrere Polylines in einer Schicht sein können
+    polylist, arrowlist = [None] * layers, [None] * layers
+
+    data = np.asarray(list_of_polylines).astype(float)
+    start = data[:, :-2]
+    end = data[:, 2:]
+    dist = end - start
+
+    # loope über eingescannte Daten, da Polylines unterschiedliche Länge haben können
+    for i in range(layers):
+        points = int((len(data[i])/2)-1)
+
+        new_start = start[i].reshape(points, 2)
+        new_end = end[i].reshape(points, 2)
+        new_dist = dist[i].reshape(points, 2)
+
+        polylist[i] = np.hstack((new_start, new_end))
+        arrowlist[i] = np.hstack((new_start, new_dist))
+
+    polylist = np.asarray(polylist)
+    arrowlist = np.asarray(arrowlist)
+
+    return polylist, arrowlist
+
+
 def convert_to_volt(data, factor=1):
     max_distance_at_one_volt = factor
     return data/max_distance_at_one_volt
@@ -154,14 +180,31 @@ def plot_arrows(data, color='k', a=1.0):
                )
 
 
-def generate_vector_data(data, rest=False, v=None, pvz=None):
+def get_points_for_velocity(x, y, v, pvz):
+    return int((np.sqrt(x ** 2 + y ** 2) / v) / (pvz * 1e-9) - 1)
+
+
+def generate_contour_data(data, v=None, pvz=None):
+    s = [f'ABS {data[0, 0]} {data[0, 1]}']
+    for d in data:
+        if v is None and pvz is None:
+            anz = ''
+        else:
+            anz = get_points_for_velocity(d[2], d[3], v, pvz)
+
+        s.append(f'REL {d[2]} {d[3]} {anz}')
+
+    return '\n'.join(s)
+
+
+def generate_hatch_data(data, rest=False, v=None, pvz=None):
     slist = []
     for d in data:
         s = []
         if v is None and pvz is None:
             anz = ''
         else:
-            anz = int((np.sqrt(d[2] ** 2 + d[3] ** 2) / v) / (pvz * 1e-9) - 1)
+            anz = get_points_for_velocity(d[2], d[3], v, pvz)
         s.append(f'ABS {d[0]} {d[1]}')
         s.append(f'REL {d[2]} {d[3]} {anz}')
         if rest:
@@ -182,11 +225,10 @@ def combine_arrays(arrays):
 
 
 def write_data(fname, sdir, data):
-    save_dir = os.path.abspath(sdir)
-    if not os.path.exists(save_dir):
-        os.makedirs(save_dir)
+    if not os.path.exists(sdir):
+        os.makedirs(sdir)
 
-    dest = os.path.join(save_dir, fname)
+    dest = os.path.join(sdir, fname)
 
     with open(dest, "w") as f:
         f.write(data)

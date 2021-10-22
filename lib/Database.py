@@ -3,6 +3,7 @@ class DataBase:
         self.hatchlist = None
         self.polylist = None
         self.arrows = None
+        self.pl_arrows = None
         self.rp_points = None
         self.rp_arrows = None
         self.outlist = []
