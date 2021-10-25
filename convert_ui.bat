@@ -1,1 +1,2 @@
-pyuic5 -x .\cli_conv.ui -o .\cli_gui.py
+pyuic5 -x .\gui\startGUI.ui -o .\gui\startGUI.py
+pyuic5 -x .\gui\plotting.ui -o .\gui\plotting.py
