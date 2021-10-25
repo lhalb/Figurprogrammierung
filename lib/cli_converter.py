@@ -31,9 +31,6 @@ def convert_hatches(layers, hatchlines):
         hatchlist[i] = data
         arrowlist[i] = arr
 
-    hatchlist = np.asarray(hatchlist)
-    arrowlist = np.asarray(arrowlist)
-
     return hatchlist, arrowlist
 
 
@@ -41,24 +38,22 @@ def convert_polylines(layers, list_of_polylines):
     # initialisiere die Daten, da mehrere Polylines in einer Schicht sein können
     polylist, arrowlist = [None] * layers, [None] * layers
 
-    data = np.asarray(list_of_polylines).astype(float)
-    start = data[:, :-2]
-    end = data[:, 2:]
-    dist = end - start
-
     # loope über eingescannte Daten, da Polylines unterschiedliche Länge haben können
     for i in range(layers):
-        points = int((len(data[i])/2)-1)
+        data = np.asarray(list_of_polylines[i]).astype('float')
 
-        new_start = start[i].reshape(points, 2)
-        new_end = end[i].reshape(points, 2)
-        new_dist = dist[i].reshape(points, 2)
+        start = data[:-2]
+        end = data[2:]
+        dist = end - start
+
+        points = int((len(data)/2)-1)
+
+        new_start = start.reshape(points, 2)
+        new_end = end.reshape(points, 2)
+        new_dist = dist.reshape(points, 2)
 
         polylist[i] = np.hstack((new_start, new_end))
         arrowlist[i] = np.hstack((new_start, new_dist))
-
-    polylist = np.asarray(polylist)
-    arrowlist = np.asarray(arrowlist)
 
     return polylist, arrowlist
 
