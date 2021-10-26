@@ -1,4 +1,6 @@
 import json
+import os
+import configparser
 
 
 def load_config(fname):
@@ -11,3 +13,22 @@ def load_config(fname):
 def save_config(fname, data):
     with open(fname, "w") as outfile:
         json.dump(data, outfile)
+
+
+def load_parameters(dest, filename='para.ini'):
+    config = configparser.ConfigParser()
+    fname = dest + '/' + filename
+    config.read(fname)
+    return config
+
+
+def save_parameters(p, dest):
+    if not os.path.exists(dest):
+        os.makedirs(dest)
+    config = configparser.ConfigParser()
+    config['PARAMS'] = p
+
+    fname = dest + '/para.ini'
+
+    with open(fname, 'w') as cf:
+        config.write(cf)

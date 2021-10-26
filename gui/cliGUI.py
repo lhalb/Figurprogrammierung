@@ -15,6 +15,7 @@ from PyQt5 import QtWidgets
 from gui import startGUI  # Hier den Namen der UI-Datei angeben
 from gui import boxes as BOX
 from gui import plotUI
+from gui import building
 import os
 from lib import cli_converter as cli
 import numpy as np
@@ -51,6 +52,7 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
         # self.but_plot.clicked.connect(self.plot_layers)
         self.but_plot.clicked.connect(self.open_plot_dialog)
         self.but_convert_cli.clicked.connect(self.save_vector_figures)
+        self.but_buildgenerator.clicked.connect(self.open_buildgenerator)
 
         self.but_debug.clicked.connect(self.debug)
 
@@ -112,7 +114,7 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
 
             l_name = self.txt_outname.text() + f'_{lay}'
             try:
-                rp_arrows = self.db.rp_arrows[lay].reshape(-1, 4)
+                rp_arrows = self.db.rp_arrows[lay]
                 arrow = self.db.arrows[lay]
 
                 cli.plot_arrows(arrow, color='tab:blue')
@@ -204,12 +206,12 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
             setattr(self.db, 'layers', lays)
             self.set_layer_anz(lays)
 
-            if p_list is not None:
+            if p_list:
                 pl, p_arr = cli.convert_polylines(lays, p_list)
                 setattr(self.db, 'polylist', pl)
                 setattr(self.db, 'pl_arrows', p_arr)
 
-            if h_list is not None:
+            if h_list:
                 hl, arr = cli.convert_hatches(lays, h_list)
                 setattr(self.db, 'hatchlist', hl)
                 setattr(self.db, 'arrows', arr)
@@ -223,10 +225,12 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
         else:
             return False
 
-    def save_vector_figures(self):
+    def save_vector_figures(self, silent=False):
         proc_layers = self.get_proc_layers()
 
+        cli_name = self.txt_outname.text()
         vec_dir = self.txt_save_vec_folder.text()
+        save_dir = vec_dir + '/' + cli_name
         save = self.cb_save_figures.isChecked()
         s_only = self.cb_save_only_plot.isChecked()
 
@@ -241,9 +245,15 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
         v_rast = float(self.txt_v_rast.text())
         build_dimension = float(self.txt_plate_size.text())/2
 
+        parameters = {'pvz': pvz,
+                      'v_hatch': v_hatch,
+                      'v_contour': v_contour,
+                      'plate_size': build_dimension*2
+                      }
+
         for fig_type in ['contours', 'hatches']:
             for lay in proc_layers:
-                l_name = self.txt_outname.text() + f'_{lay}_{fig_type}'
+                l_name = cli_name + f'_{lay}_{fig_type}'
 
                 outlist = []
                 if self.db.rp_arrows is not None:
@@ -285,9 +295,10 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
 
                 output = cli.generate_output(outlist)
 
-                cli.write_data(f'{l_name}.bxy', vec_dir, output)
-
-            BOX.show_info_box(f'Datei "{fig_type}" erfolgreich gespeichert')
+                cf.save_parameters(parameters, save_dir)
+                cli.write_data(f'{l_name}.bxy', save_dir, output)
+            if not silent:
+                BOX.show_info_box(f'Datei "{fig_type}" erfolgreich gespeichert')
 
     def debug(self, hidden=False):
         return
@@ -298,6 +309,10 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
         cli.init_plot()
         cli.plot_arrows(bxy_data)
         cli.show_plot()
+
+    def open_buildgenerator(self):
+        bg = building.BuildGenerator()
+        bg.exec_()
 
     def file_open(self):
         path = QtWidgets.QFileDialog.getOpenFileName(self, 'Gib den Pfad zur Datei an')[0]

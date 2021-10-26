@@ -5,6 +5,7 @@ import os
 matplotlib.use('Qt5agg')
 
 
+
 def load_data(file):
     with open(file) as f:
         lines = f.readlines()
@@ -106,8 +107,6 @@ def make_rest_positions(d, v=100, time=2, rp_min=0.3, rp_max=0.7, exact=4, verbo
         if verbose:
             print(f'SOLL: {soll_weg}, IST: {weg}, Bahnen: {anz}')
 
-    print(max(pos), min(pos))
-
     points = np.zeros((len(pos), 4, 4))
 
     for i, el in enumerate(pos):
@@ -136,7 +135,7 @@ def make_rest_positions(d, v=100, time=2, rp_min=0.3, rp_max=0.7, exact=4, verbo
 
     rp_points = np.hstack((starts, dirs))
 
-    return rp_points, points
+    return rp_points, points.reshape(-1, 4)
 
 
 def init_plot(size=4, unit='mm', layer=0):
@@ -236,7 +235,7 @@ def generate_output(strings, comment='default'):
     else:
         comment_string.append(comment)
 
-    comment_string.append('#VECTOR\nDATA')
+    comment_string.append('# VECTOR\nDATA')
 
     comment_string = '\n'.join(comment_string)
 

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>504</width>
+    <width>507</width>
     <height>543</height>
    </rect>
   </property>
@@ -157,58 +157,6 @@
           </item>
           <item row="0" column="2">
            <layout class="QGridLayout" name="gridLayout">
-            <item row="5" column="0">
-             <widget class="QPushButton" name="but_plot">
-              <property name="maximumSize">
-               <size>
-                <width>150</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Plotte Schicht(en)</string>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="0">
-             <widget class="QPushButton" name="but_rast">
-              <property name="maximumSize">
-               <size>
-                <width>150</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="focusPolicy">
-               <enum>Qt::TabFocus</enum>
-              </property>
-              <property name="text">
-               <string>Füge
-Ruhebereich
-hinzu</string>
-              </property>
-             </widget>
-            </item>
-            <item row="6" column="0">
-             <widget class="QPushButton" name="but_convert_cli">
-              <property name="maximumSize">
-               <size>
-                <width>150</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>12</pointsize>
-                <weight>75</weight>
-                <bold>true</bold>
-               </font>
-              </property>
-              <property name="text">
-               <string>Konvertiere
-CLI --&gt; .bxy</string>
-              </property>
-             </widget>
-            </item>
             <item row="4" column="0">
              <widget class="QPushButton" name="but_clear_rast">
               <property name="text">
@@ -246,7 +194,7 @@ Ruhebereich</string>
                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Welcher Layer soll angezeigt/konvertiert werden?&lt;/span&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Eingabemöglichkeiten:&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;x&lt;/span&gt; --&amp;gt; Layer x wird prozessiert &lt;br/&gt;&lt;br/&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;x, y, z&lt;/span&gt; --&amp;gt; Layer x, y, z werden prozessiert&lt;br/&gt;&lt;br/&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;all&lt;/span&gt; --&amp;gt; Alle Layer werden prozessiert&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                 <property name="text">
-                 <string>0</string>
+                 <string>all</string>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
@@ -267,6 +215,68 @@ Ruhebereich</string>
               </item>
              </layout>
             </item>
+            <item row="6" column="0">
+             <widget class="QPushButton" name="but_convert_cli">
+              <property name="maximumSize">
+               <size>
+                <width>150</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>11</pointsize>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>Konvertiere
+CLI --&gt; .bxy</string>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="0">
+             <widget class="QPushButton" name="but_plot">
+              <property name="maximumSize">
+               <size>
+                <width>150</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Plotte Schicht(en)</string>
+              </property>
+              <property name="shortcut">
+               <string>Ctrl+P</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0">
+             <widget class="QPushButton" name="but_debug">
+              <property name="text">
+               <string>Debug</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QPushButton" name="but_rast">
+              <property name="maximumSize">
+               <size>
+                <width>150</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="focusPolicy">
+               <enum>Qt::TabFocus</enum>
+              </property>
+              <property name="text">
+               <string>Füge
+Ruhebereich
+hinzu</string>
+              </property>
+             </widget>
+            </item>
             <item row="1" column="0">
              <spacer name="verticalSpacer">
               <property name="orientation">
@@ -279,13 +289,6 @@ Ruhebereich</string>
                </size>
               </property>
              </spacer>
-            </item>
-            <item row="0" column="0">
-             <widget class="QPushButton" name="but_debug">
-              <property name="text">
-               <string>Debug</string>
-              </property>
-             </widget>
             </item>
            </layout>
           </item>
@@ -726,6 +729,29 @@ Ruhebereich</string>
       </widget>
      </widget>
     </item>
+    <item>
+     <widget class="QPushButton" name="but_buildgenerator">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>40</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>11</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>Buildgenerator</string>
+      </property>
+      <property name="shortcut">
+       <string>Ctrl+B</string>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -733,7 +759,7 @@ Ruhebereich</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>504</width>
+     <width>507</width>
      <height>21</height>
     </rect>
    </property>
