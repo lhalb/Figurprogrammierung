@@ -103,9 +103,15 @@ class PlotDialog(QtWidgets.QDialog, pg.Ui_Dialog):
         if cl > self.max_layers:
             return
         if self.cb_poly.isChecked():
-            plot_arrows(self.data['polylines'][cl], color='tab:red')
+            data = self.data['polylines'][cl]
+            plot_arrows(data, color='tab:red')
+            self.data_ax.plot(data[0, 0], data[0, 1],
+                              marker='o', ms=5, mec='tab:red', mfc='w', mew=2)
         if self.cb_hatch.isChecked():
-            plot_arrows(self.data['hatches'][cl], color='k')
+            data = self.data['hatches'][cl]
+            plot_arrows(data, color='k')
+            self.data_ax.plot(data[0, 0], data[0, 1],
+                              marker='o', ms=5, mec='k', mfc='w', mew=2)
         if self.cb_rest.isChecked():
             plot_arrows(self.data['rest'][cl], color='tab:orange', a=0.1)
 
