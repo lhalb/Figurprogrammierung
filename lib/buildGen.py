@@ -49,6 +49,8 @@ def process_folder_list(fl, param_data, b_directory=None, hatches_first=False):
             para_string = create_new_section(section, current_layer, figures_in_layer, param_data)
             # schreibe ihn in eine Datei im Build-Verzeichnis
             write_cnc_file(para_string, b_directory)
+            figures_in_layer_before = figures_in_layer
+            section += 1
 
         # ------------------------------------------------------
         # an dieser Stelle kann man sich rausschreiben, wie viele Figuren im Layer sind
@@ -69,9 +71,9 @@ def process_folder_list(fl, param_data, b_directory=None, hatches_first=False):
 def create_new_section(nr, cl, figures, params):
     dimx = 150
     dimy = 150
-    stringlist = [f'_par_field[{nr},0] = SET({cl}, {dimx}, {dimy}, {figures})']
-    for i, p in enumerate(params):
-        pvzl = p['pvz']
+    stringlist = [f'_par_field[{nr},0] = SET({cl+1}, {dimx}, {dimy}, {figures})']
+    for i, f in enumerate(figures):
+        pvzl = params[f]['pvz']
         pvzh = 0
         il = 2000
         ib = 5
