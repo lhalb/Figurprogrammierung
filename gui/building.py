@@ -19,6 +19,7 @@ class BuildGenerator(QtWidgets.QDialog, bG.Ui_Dialog):
 
     def load_data(self):
         folderlist = self.get_folders()
+        print(folderlist)
 
         tab = self.tab_open_folders
         tab.setRowCount(len(folderlist) + 1)
@@ -66,8 +67,10 @@ class BuildGenerator(QtWidgets.QDialog, bG.Ui_Dialog):
         try:
             dest = self.txt_destination.text()
             hatch_first = self.cb_hatch_first.isChecked()
-            bGe.process_folder_list(flist, parameters, b_directory=dest, hatches_first=hatch_first)
-            BOX.show_info_box('Baujob erfolgreich erstellt.')
+            success = bGe.process_folder_list(flist, parameters, b_directory=dest, hatches_first=hatch_first)
+            if success:
+                BOX.show_info_box('Baujob erfolgreich erstellt.')
+
         except FileNotFoundError:
             BOX.show_error_box('Ausgabeziel nicht definiert')
 

@@ -1,10 +1,15 @@
 import os
 from shutil import copyfile
+from gui import boxes as BOX
 
 
 def process_folder_list(fl, param_data, b_directory=None, hatches_first=False):
     if not b_directory or b_directory == '':
         raise FileNotFoundError
+
+    accepted = BOX.show_msg_box('Der Inhalt des Ordners wird gelöscht.\nFortfahren?')
+    if not accepted:
+        return False
 
     # lösche alle alten dateien
     for f in os.listdir(b_directory):
@@ -42,7 +47,7 @@ def process_folder_list(fl, param_data, b_directory=None, hatches_first=False):
         layer_figures = [i for sublist in layer_figures for i in sublist]
         # Teste, ob sich die Figurenanzahl im Layer geändert hat
         figures_in_layer = len(layer_figures)
-        if figures_in_layer == figures_in_layer_before:
+        if figures_in_layer == figures_in_layer_before or figures_in_layer == 0:
             pass
         else:
             # erstelle den String für eine Neue Section
@@ -67,17 +72,19 @@ def process_folder_list(fl, param_data, b_directory=None, hatches_first=False):
         if not fl:
             no_layers_left = True
 
+    return True
+
 
 def create_new_section(nr, cl, figures, params):
     dimx = 150
     dimy = 150
     stringlist = [f'_par_field[{nr},0] = SET({cl+1}, {dimx}, {dimy}, {figures})']
-    for i, f in enumerate(figures):
-        pvzl = params[f]['pvz']
+    for f in range(figures):
+        pvzl = params[int(f/2)]['pvz']
         pvzh = 0
         il = 2000
         ib = 5
-        s = f'_par_field[{nr}, {10+5*i}] = SET({il}, {ib}, {pvzl}, {pvzh})'
+        s = f'_par_field[{nr}, {10+5*f}] = SET({il}, {ib}, {pvzl}, {pvzh})'
         stringlist.append(s)
 
     sec_string = '\n'.join(stringlist)
