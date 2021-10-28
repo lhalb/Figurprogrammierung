@@ -1,6 +1,7 @@
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
+from lib import helperFunctions as hF
 import os
 matplotlib.use('Qt5agg')
 
@@ -219,6 +220,7 @@ def combine_arrays(arrays):
 
 
 def write_data(fname, sdir, data):
+    # falls das Verezichnis noch nicht existiert
     if not os.path.exists(sdir):
         os.makedirs(sdir)
 

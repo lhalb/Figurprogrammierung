@@ -1,6 +1,7 @@
 import json
 import os
 import configparser
+from lib import helperFunctions as hF
 
 
 def load_config(fname):
@@ -22,13 +23,14 @@ def load_parameters(dest, filename='para.ini'):
     return config
 
 
-def save_parameters(p, dest):
+def save_parameters(p, dest, section):
     if not os.path.exists(dest):
         os.makedirs(dest)
     config = configparser.ConfigParser()
-    config['PARAMS'] = p
+    config[section] = p
 
     fname = dest + '/para.ini'
 
-    with open(fname, 'w') as cf:
+    mode = hF.get_mode(fname)
+    with open(fname, mode) as cf:
         config.write(cf)

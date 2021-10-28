@@ -10,7 +10,7 @@ Code für Umwandlung:
     pyuic5 -x template.ui -o template.py
 
 '''
-
+import sys
 from PyQt5 import QtWidgets
 from gui import startGUI  # Hier den Namen der UI-Datei angeben
 from gui import boxes as BOX
@@ -21,6 +21,7 @@ from lib import cli_converter as cli
 import numpy as np
 from lib import config as cf
 from lib import bxy_converter as bxy
+from lib import helperFunctions as hF
 from lib.Database import DataBase
 
 
@@ -31,9 +32,10 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
         super(self.__class__, self).__init__()
         self.setupUi(self)
         self.setup_triggers()  # lade Events für Buttons
+        self.tabs.hide()
+        self.resize(self.sizeHint().width(), self.sizeHint().height())
         self.tabs.setTabEnabled(1, False)
         self.tabs.setTabEnabled(0, False)
-        self.but_clear_rast.setEnabled(False)
 
         self.db = DataBase()
 
@@ -47,30 +49,80 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
         self.but_outname.clicked.connect(self.save_destination)
         self.but_save_plot_folder.clicked.connect(self.save_destination)
         self.but_save_vec_folder.clicked.connect(self.save_destination)
-        self.but_clear_rast.clicked.connect(self.clear_rast)
-        self.but_rast.clicked.connect(self.add_rest_layers)
+        self.but_rest_dialog.clicked.connect(self.open_rest_dialog)
         # self.but_plot.clicked.connect(self.plot_layers)
         self.but_plot.clicked.connect(self.open_plot_dialog)
         self.but_convert_cli.clicked.connect(self.save_vector_figures)
         self.but_buildgenerator.clicked.connect(self.open_buildgenerator)
 
-        self.but_debug.clicked.connect(self.debug)
 
     def get_proc_layers(self):
-        if self.txt_layer.text() == 'all':
-            proc_layers = range(self.db.layers)
+        def max_or_min(vals, max_val, min_val=0):
+            if [v for v in vals if v >= max_val]:
+                BOX.show_error_box('Einer der Werte ist zu hoch')
+                return True
+            if [v for v in vals if v < min_val]:
+                BOX.show_error_box('Einer der Werte ist zu niedrig')
+                return True
+
+        txt = self.txt_layer.text()
+        max_layers = self.db.layers
+        if txt == 'all':
+            proc_layers = [i for i in range(max_layers)]
+        # Wenn man eine Range angegeben hat
+        elif ':' in txt:
+            lay_range = txt.split(':')
+            print(lay_range)
+            # Es gibt mehr oder weniger als zwei Werte
+            if len(lay_range) != 2:
+                BOX.show_error_box('Falsche Range-Angabe')
+                return False
+            # Wenn man nur ':' eingegeben hat
+            elif lay_range[0] == '' and lay_range[1] == '':
+                BOX.show_error_box('Keine Range angegeben')
+                return False
+            # Es gibt mindestens zwei Werte
+            else:
+                try:
+                    if lay_range[0] == '':
+                        start = 0
+                    else:
+                        start = int(lay_range[0])
+                    if lay_range[1] == '':
+                        end = max_layers - 1
+                    else:
+                        end = int(lay_range[1])
+                except ValueError:
+                    BOX.show_error_box('Fehler bei der INT-Konvertierung')
+                    return False
+
+                # Falls Werte übersetzt werden können
+                # Falls aber einer der beiden Werte größer als die Layeranzahl ist
+                if max_or_min([start, end], max_layers, 0):
+                    return False
+
+                proc_layers = [i for i in range(start, end + 1)]
+
+        # Wenn man eine Zahlenreihe angegeben hat
         else:
-            proc_layers = list(map(int, self.txt_layer.text().split(',')))
+            try:
+                proc_layers = list(map(int, self.txt_layer.text().split(',')))
+                # Wenn einer der Layer größer als die Layeranzahl ist:
+                if max_or_min(proc_layers, max_layers, 0):
+                    return False
+            except ValueError:
+                BOX.show_error_box('Fehler bei der INT-Konvertierung')
+                return False
 
         return proc_layers
 
     def add_rest_layers(self):
-        if self.check_infile():
-            pass
-        else:
+        if not self.check_infile():
             return
 
         proc_layers = self.get_proc_layers()
+        if not proc_layers:
+            return
 
         v_rast = float(self.txt_v_rast.text().replace(',', '.'))
         t_rast = float(self.txt_t_rast.text().replace(',', '.'))
@@ -101,6 +153,8 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
 
     def plot_layers(self, hidden=False):
         proc_layers = self.get_proc_layers()
+        if not proc_layers:
+            return
         save = self.cb_save_figures.isChecked()
         s_dir = self.txt_save_plot_folder.text()
         s_only = self.cb_save_only_plot.isChecked()
@@ -181,6 +235,9 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
         pd = plotUI.PlotDialog(transfer_data)
         pd.exec_()
 
+    def open_rest_dialog(self):
+        return
+
     def clear_rast(self):
         self.but_rast.setEnabled(True)
         self.but_clear_rast.setEnabled(False)
@@ -227,6 +284,8 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
 
     def save_vector_figures(self, silent=False):
         proc_layers = self.get_proc_layers()
+        if not proc_layers:
+            return
 
         cli_name = self.txt_outname.text()
         vec_dir = self.txt_save_vec_folder.text()
@@ -234,22 +293,35 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
         save = self.cb_save_figures.isChecked()
         s_only = self.cb_save_only_plot.isChecked()
 
+        if hF.test_for_matching_files([save_dir], ['.bxy', '.ini']):
+            accepted = BOX.show_msg_box('Das gewählte Verzeichnis ist nicht leer.\n\nLöschen?')
+            if accepted:
+                hF.delete_all_files_in_directory(save_dir)
+            else:
+                return
+
         if save or s_only:
             self.plot_layers(hidden=True)
             if s_only:
                 return
 
-        pvz = int(self.txt_pvz.text())
+
         v_hatch = float(self.txt_v_hatch.text())
+        pvz_hatch = int(self.txt_pvz_hatch.text())
+        ib_hatch = float(self.txt_ib_hatch.text())
+        il_hatch = int(self.txt_il_hatch.text())
+
         v_contour = float(self.txt_v_contour.text())
+        pvz_contour = int(self.txt_pvz_contour.text())
+        ib_contour = float(self.txt_ib_contour.text())
+        il_contour = int(self.txt_il_contour.text())
+
         v_rast = float(self.txt_v_rast.text())
         build_dimension = float(self.txt_plate_size.text())/2
 
-        parameters = {'pvz': pvz,
-                      'v_hatch': v_hatch,
-                      'v_contour': v_contour,
-                      'plate_size': build_dimension*2
-                      }
+        parameters = {'plate_size': build_dimension*2}
+
+        cf.save_parameters(parameters, save_dir, 'DEFAULT')
 
         for fig_type in ['contours', 'hatches']:
             for lay in proc_layers:
@@ -269,7 +341,7 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
                     vec_rast = cli.generate_hatch_data(rp_arr_conv,
                                                        rest=True,
                                                        v=v_rast,
-                                                       pvz=pvz)
+                                                       pvz=pvz_hatch)
                     outlist.append(vec_rast)
                 else:
                     pass
@@ -286,18 +358,34 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
                 if fig_type == 'contours':
                     vec = cli.generate_contour_data(arrow_conv,
                                                     v=v_contour,
-                                                    pvz=pvz)
+                                                    pvz=pvz_contour)
                 else:
                     vec = cli.generate_hatch_data(arrow_conv,
                                                   v=v_hatch,
-                                                  pvz=pvz)
+                                                  pvz=pvz_contour)
                 outlist.append(vec)
 
                 output = cli.generate_output(outlist)
 
-                cf.save_parameters(parameters, save_dir)
                 cli.write_data(f'{l_name}.bxy', save_dir, output)
-            if not silent:
+
+            if fig_type == 'contours':
+                parameters = {
+                    'pvz': pvz_contour,
+                    'v': v_contour,
+                    'IB': ib_contour,
+                    'IL': il_contour
+                }
+            else:
+                parameters = {
+                    'pvz': pvz_hatch,
+                    'v': v_hatch,
+                    'IB': ib_hatch,
+                    'IL': il_hatch
+                }
+            cf.save_parameters(parameters, save_dir, fig_type)
+
+            if not self.cb_quiet.isChecked():
                 BOX.show_info_box(f'Datei "{fig_type}" erfolgreich gespeichert')
 
     def debug(self, hidden=False):
@@ -350,6 +438,8 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
 
         # Hier wird getestet, welche Datei angegeben wurde.
         if file_extension == '.cli':
+            self.tabs.show()
+            # self.setFixedSize(self.full_window.sizeHint())
             self.tabs.setCurrentIndex(0)
             self.tabs.setTabEnabled(0, True)
             self.tabs.setTabEnabled(1, False)
@@ -358,6 +448,8 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
             BOX.show_info_box(f'Datei erfolgreich geladen.')
 
         elif '.b' in file_extension:
+            self.tabs.show()
+            # self.setFixedSize(self.full_window.sizeHint())
             self.tabs.setCurrentIndex(1)
             self.tabs.setTabEnabled(0, False)
             self.tabs.setTabEnabled(1, True)

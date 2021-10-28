@@ -4,6 +4,7 @@ from gui import buildGUI as bG
 from gui import boxes as BOX
 from lib import config as cf
 from lib import buildGen as bGe
+from lib import helperFunctions as hF
 
 
 class BuildGenerator(QtWidgets.QDialog, bG.Ui_Dialog):
@@ -18,8 +19,17 @@ class BuildGenerator(QtWidgets.QDialog, bG.Ui_Dialog):
         self.but_generate_build_job.clicked.connect(self.generate_build_job)
 
     def load_data(self):
+        # lade Ordner
         folderlist = self.get_folders()
-        print(folderlist)
+        # teste, ob .bxy und .ini Dateien im Ordner liegen
+        out = hF.test_for_matching_files(folderlist, ['.bxy', '*.ini'])
+
+        # Filtere nur nach passenden Ordnern
+        folderlist = hF.masklist(folderlist, out)
+
+        # falls keiner der Ordner passende Dateien enthält
+        if len(folderlist) == 0:
+            return
 
         tab = self.tab_open_folders
         tab.setRowCount(len(folderlist) + 1)
