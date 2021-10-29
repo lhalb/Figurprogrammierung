@@ -1,10 +1,13 @@
 import os
-import fnmatch
 from shutil import copyfile
 from gui import boxes as BOX
 from lib import helperFunctions as hF
 
+
 def process_folder_list(fl, param_data, b_directory=None, hatches_first=False):
+    if b_directory == '':
+        BOX.show_error_box('Kein Zielverzeichnis angegeben!')
+        return False
 
     accepted = BOX.show_msg_box('Der Inhalt des Ordners wird gelöscht.\nFortfahren?')
     if not accepted:
@@ -21,7 +24,8 @@ def process_folder_list(fl, param_data, b_directory=None, hatches_first=False):
     while not no_layers_left:
         layer_figures = []
 
-        for fold in fl:
+        # gehe nur durch die Ordner, die noch Daten enthalten (Ordner ohne Daten werden auf "None" gesetzt
+        for fold in [f for f in fl if f]:
             # liste alle Dateien im Ordner auf
             all_files = os.listdir(fold)
 
@@ -31,7 +35,12 @@ def process_folder_list(fl, param_data, b_directory=None, hatches_first=False):
             matching_figures = [string for string in all_files if substring in string and '.bxy' in string]
             # Falls der Ordner keine Figuren mehr in diesem Layer enthält
             if not matching_figures:
-                fl.remove(fold)
+                # index des Ordners heraussuchen
+                index_of_folder = fl.index(fold)
+                # den Ordner von der Liste zu durchsuchender Ordner löschen
+                fl[index_of_folder] = None
+                # Liste mit Parameterdateien anpassen
+                param_data[index_of_folder] = None
                 continue
             else:
                 # Wenn Hatches zuerst geschrieben werden sollen
@@ -45,10 +54,10 @@ def process_folder_list(fl, param_data, b_directory=None, hatches_first=False):
         # Teste, ob sich die Figurenanzahl im Layer geändert hat
         figures_in_layer = len(layer_figures)
 
-        if figures_in_layer != figures_in_layer_before or figures_in_layer != 0:
-            print(param_data)
+        if figures_in_layer != figures_in_layer_before and figures_in_layer != 0:
             # erstelle den String für eine Neue Section
-            para_string = create_new_section(section, current_layer, figures_in_layer, param_data)
+            parameters = [i for i in param_data if i]
+            para_string = create_new_section(section, current_layer, figures_in_layer, parameters, layer_figures)
             # schreibe ihn in eine Datei im Build-Verzeichnis
             write_cnc_file(para_string, b_directory)
             figures_in_layer_before = figures_in_layer
@@ -63,21 +72,33 @@ def process_folder_list(fl, param_data, b_directory=None, hatches_first=False):
         current_layer += 1
 
         # Wenn es keine Ordner mehr gibt, in denen Figuren liegen
-        if not fl:
+        if not any(fl):
             no_layers_left = True
 
     return True
 
 
-def create_new_section(nr, cl, figures, params):
-    dimx = 150
-    dimy = 150
+def create_new_section(nr, cl, figures, params, figure_names):
+    dimx = params[0]['plate_size']
+    dimy = params[0]['plate_size']
+
     stringlist = [f'_par_field[{nr},0] = SET({cl+1}, {dimx}, {dimy}, {figures})']
+    par = -1
+    folder_before = ''
     for f in range(figures):
-        pvzl = params[int(f/2)]['pvz']
+        curr_folder = figure_names[f].split('/')[-2]
+        for s in ['contours', 'hatches']:
+            if s in figure_names[f]:
+                sec = s
+
+        if curr_folder != folder_before:
+            par += 1
+        folder_before = curr_folder
+
+        pvzl = params[par][sec]['pvz']
         pvzh = 0
-        il = 2000
-        ib = 5
+        il = params[par][sec]['IL']
+        ib = params[par][sec]['IB']
         s = f'_par_field[{nr}, {10+5*f}] = SET({il}, {ib}, {pvzl}, {pvzh})'
         stringlist.append(s)
 
@@ -90,15 +111,9 @@ def write_cnc_file(s, dest, name='0_cnc_params.txt'):
     fname = dest + '/' + name
     mode = hF.get_mode(fname)
     with open(fname, mode) as f:
+        if mode == 'a':
+            s = "\n\n" + s
         f.write(s)
 
-def test_for_matching_files(directory, ftype=['.bxy', '*.ini']):
-    ret_val = [False] * len(directory)
-    for i, d in enumerate(directory):
-        files = os.listdir(d)
-        if [ft for ft in ftype if fnmatch.filter(files, f'*{ft}')]:
-            ret_val[i] = True
-
-    return ret_val
 
 

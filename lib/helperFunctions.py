@@ -1,5 +1,6 @@
 import os
 import fnmatch
+from itertools import groupby
 
 
 # Function to use boolean masks on lists
@@ -31,3 +32,12 @@ def get_mode(file):
         mode = 'a'
 
     return mode
+
+
+def all_unique(x):
+    return not len(x) > len(set(x))
+
+
+def all_equal(iterable):
+    g = groupby(iterable)
+    return next(g, True) and not next(g, False)

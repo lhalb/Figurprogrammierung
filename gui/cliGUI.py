@@ -321,7 +321,7 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
 
         parameters = {'plate_size': build_dimension*2}
 
-        cf.save_parameters(parameters, save_dir, 'DEFAULT')
+        cf.save_parameters(parameters, save_dir, 'general')
 
         for fig_type in ['contours', 'hatches']:
             for lay in proc_layers:

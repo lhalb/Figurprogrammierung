@@ -32,16 +32,32 @@ class BuildGenerator(QtWidgets.QDialog, bG.Ui_Dialog):
             return
 
         tab = self.tab_open_folders
-        tab.setRowCount(len(folderlist) + 1)
+        tab.setRowCount(len(folderlist))
 
         orderlist = [None] * len(folderlist)
 
         for i, f in enumerate(folderlist):
             para = cf.load_parameters(f)
+            general_sec = 'general'
+            if not para.has_section(general_sec):
+                para.add_section(general_sec)
+                para.set(general_sec, 'plate_size', '-')
 
-            tab.setItem(i+1, 0, QTI(str(i+1)))
-            tab.setItem(i+1, 1, QTI(str(para['PARAMS']['pvz'])))
-            tab.setItem(i + 1, 2, QTI(f))
+            for fig_type in ['contours', 'hatches']:
+                if not para.has_section(fig_type):
+                    para.add_section(fig_type)
+                    for p in ['pvz', 'IB', 'IL']:
+                        para.set(fig_type, p, '-')
+
+            tab.setItem(i, 0, QTI(str(i+1)))
+            tab.setItem(i, 1, QTI(str(para['contours']['pvz'])))
+            tab.setItem(i, 2, QTI(str(para['contours']['IB'])))
+            tab.setItem(i, 3, QTI(str(para['contours']['IL'])))
+            tab.setItem(i, 4, QTI(str(para['hatches']['pvz'])))
+            tab.setItem(i, 5, QTI(str(para['hatches']['IB'])))
+            tab.setItem(i, 6, QTI(str(para['hatches']['IL'])))
+            tab.setItem(i, 7, QTI(str(para['general']['plate_size'])))
+            tab.setItem(i, 8, QTI(f))
 
             orderlist[i] = str(i+1)
 
@@ -66,13 +82,32 @@ class BuildGenerator(QtWidgets.QDialog, bG.Ui_Dialog):
         order = self.txt_user_order.text().split(', ')
         order = list(map(int, order))
 
+        if not hF.all_unique(order):
+            BOX.show_info_box('Es wurden Ordner mehrfach gewählt!')
+            return
+
         flist = [None] * len(order)
-        parameters = [{}] * len(order)
+        parameters = [None] * len(order)
 
         tab = self.tab_open_folders
         for i in range(len(order)):
-            flist[i] = tab.item(order[i], 2).text()
-            parameters[i]['pvz'] = tab.item(order[i], 1).text()
+            flist[i] = tab.item(order[i]-1, 8).text()
+            parameters[i] = {
+                'contours': {
+                    'pvz': tab.item(order[i]-1, 1).text(),
+                    'IB': tab.item(order[i]-1, 2).text(),
+                    'IL': tab.item(order[i]-1, 3).text()
+                },
+                'hatches': {
+                    'pvz': tab.item(order[i]-1, 4).text(),
+                    'IB': tab.item(order[i]-1, 5).text(),
+                    'IL': tab.item(order[i]-1, 6).text()
+                },
+                'plate_size': tab.item(order[i]-1, 7).text()
+            }
+        if not hF.all_equal([i['plate_size'] for i in parameters]):
+            BOX.show_error_box('Es sind Figuren für unterschiedliche Bauräume geladen.')
+            return
 
         try:
             dest = self.txt_destination.text()
@@ -81,10 +116,9 @@ class BuildGenerator(QtWidgets.QDialog, bG.Ui_Dialog):
             if success:
                 BOX.show_info_box('Baujob erfolgreich erstellt.')
 
-        except FileNotFoundError:
-            BOX.show_error_box('Ausgabeziel nicht definiert')
-
-
+        except FileNotFoundError as FE:
+            print(FE)
+            BOX.show_error_box('Datei nicht gefunden.')
 
 
 class FileDialog(QtWidgets.QFileDialog):

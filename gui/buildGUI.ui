@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>459</width>
+    <width>781</width>
     <height>541</height>
    </rect>
   </property>
@@ -49,6 +49,9 @@ Folders</string>
        <property name="shortcut">
         <string>Ctrl+O</string>
        </property>
+       <property name="autoDefault">
+        <bool>false</bool>
+       </property>
       </widget>
      </item>
      <item>
@@ -75,7 +78,7 @@ Folders</string>
       <item>
        <widget class="QTableWidget" name="tab_open_folders">
         <property name="editTriggers">
-         <set>QAbstractItemView::NoEditTriggers</set>
+         <set>QAbstractItemView::AnyKeyPressed|QAbstractItemView::DoubleClicked</set>
         </property>
         <property name="dragEnabled">
          <bool>true</bool>
@@ -87,7 +90,7 @@ Folders</string>
          <bool>true</bool>
         </property>
         <property name="selectionBehavior">
-         <enum>QAbstractItemView::SelectRows</enum>
+         <enum>QAbstractItemView::SelectItems</enum>
         </property>
         <property name="sortingEnabled">
          <bool>true</bool>
@@ -99,7 +102,7 @@ Folders</string>
          <number>0</number>
         </property>
         <property name="columnCount">
-         <number>3</number>
+         <number>9</number>
         </property>
         <attribute name="horizontalHeaderCascadingSectionResizes">
          <bool>false</bool>
@@ -108,10 +111,10 @@ Folders</string>
          <number>25</number>
         </attribute>
         <attribute name="horizontalHeaderDefaultSectionSize">
-         <number>40</number>
+         <number>50</number>
         </attribute>
         <attribute name="horizontalHeaderHighlightSections">
-         <bool>true</bool>
+         <bool>false</bool>
         </attribute>
         <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
          <bool>true</bool>
@@ -125,11 +128,14 @@ Folders</string>
         <attribute name="verticalHeaderCascadingSectionResizes">
          <bool>false</bool>
         </attribute>
+        <attribute name="verticalHeaderDefaultSectionSize">
+         <number>25</number>
+        </attribute>
         <attribute name="verticalHeaderHighlightSections">
          <bool>false</bool>
         </attribute>
         <attribute name="verticalHeaderShowSortIndicator" stdset="0">
-         <bool>true</bool>
+         <bool>false</bool>
         </attribute>
         <column>
          <property name="text">
@@ -138,7 +144,37 @@ Folders</string>
         </column>
         <column>
          <property name="text">
-          <string>PVZ</string>
+          <string>PVZ-C</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>IB-C</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>IL-C</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>PVZ-H</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>IB-H</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>IL-H</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>SIZE</string>
          </property>
         </column>
         <column>
@@ -225,6 +261,15 @@ Folders</string>
          <property name="shortcut">
           <string>Ctrl+S</string>
          </property>
+         <property name="toolButtonStyle">
+          <enum>Qt::ToolButtonIconOnly</enum>
+         </property>
+         <property name="autoRaise">
+          <bool>false</bool>
+         </property>
+         <property name="arrowType">
+          <enum>Qt::NoArrow</enum>
+         </property>
         </widget>
        </item>
       </layout>
@@ -252,6 +297,9 @@ Folders</string>
        </property>
        <property name="text">
         <string>Generate Build Job</string>
+       </property>
+       <property name="default">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
