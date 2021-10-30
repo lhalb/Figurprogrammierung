@@ -12,10 +12,8 @@ Code für Umwandlung:
 '''
 import sys
 from PyQt5 import QtWidgets
-from gui import startGUI  # Hier den Namen der UI-Datei angeben
+from gui import startGUI, plotting, building, resting  # Hier den Namen der UI-Datei angeben
 from gui import boxes as BOX
-from gui import plotUI
-from gui import building
 import os
 from lib import cli_converter as cli
 import numpy as np
@@ -50,11 +48,9 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
         self.but_save_plot_folder.clicked.connect(self.save_destination)
         self.but_save_vec_folder.clicked.connect(self.save_destination)
         self.but_rest_dialog.clicked.connect(self.open_rest_dialog)
-        # self.but_plot.clicked.connect(self.plot_layers)
         self.but_plot.clicked.connect(self.open_plot_dialog)
         self.but_convert_cli.clicked.connect(self.save_vector_figures)
         self.but_buildgenerator.clicked.connect(self.open_buildgenerator)
-
 
     def get_proc_layers(self):
         def max_or_min(vals, max_val, min_val=0):
@@ -116,41 +112,6 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
 
         return proc_layers
 
-    def add_rest_layers(self):
-        if not self.check_infile():
-            return
-
-        proc_layers = self.get_proc_layers()
-        if not proc_layers:
-            return
-
-        v_rast = float(self.txt_v_rast.text().replace(',', '.'))
-        t_rast = float(self.txt_t_rast.text().replace(',', '.'))
-        r_min = float(self.txt_r_min.text().replace(',', '.'))
-        r_max = float(self.txt_r_max.text().replace(',', '.'))
-        acc = int(self.txt_accuracy.text())
-
-        setattr(self.db, 'rp_points', [None]*self.db.layers)
-        setattr(self.db, 'rp_arrows', [None]*self.db.layers)
-
-        for lay in proc_layers:
-            hatch = self.db.hatchlist[lay]
-            d = cli.get_outbox(hatch)
-            rp_points, rp_arrows = cli.make_rest_positions(d,
-                                                           v=v_rast,
-                                                           time=t_rast,
-                                                           rp_min=r_min,
-                                                           rp_max=r_max,
-                                                           exact=acc)
-
-            self.db.rp_arrows[lay] = rp_arrows
-            self.db.rp_points[lay] = rp_points
-
-            self.but_rast.setEnabled(False)
-            self.but_clear_rast.setEnabled(True)
-
-            print(f'Rastfigur erfolgreich erzeugt.')
-
     def plot_layers(self, hidden=False):
         proc_layers = self.get_proc_layers()
         if not proc_layers:
@@ -211,7 +172,7 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
 
         return check_flag
 
-    def open_plot_dialog(self):
+    def get_transfer_data(self):
         check_data = self.check_data()
         transfer_data = {}
         # Teste, ob hatchlines enthalten sind
@@ -232,17 +193,41 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
         else:
             transfer_data['rest'] = self.db.rp_arrows
 
-        pd = plotUI.PlotDialog(transfer_data)
+        return transfer_data
+
+    def open_plot_dialog(self):
+        data = self.get_transfer_data()
+
+        pd = plotting.PlotDialog(data)
         pd.exec_()
 
     def open_rest_dialog(self):
+        data = self.get_transfer_data()
+        rd = resting.RestDialog(data, )
         return
 
-    def clear_rast(self):
-        self.but_rast.setEnabled(True)
-        self.but_clear_rast.setEnabled(False)
-        setattr(self.db, 'rp_points', None)
-        setattr(self.db, 'rp_arrows', None)
+    def get_parameters(self):
+        parameters = {
+            'rest': {
+                'v': float(self.txt_v_rast.text())
+            },
+            'general': {
+                'plate_size': float(self.txt_plate_size.text())
+            },
+            'contours': {
+                'pvz': int(self.txt_pvz_contour.text()),
+                'v': float(self.txt_v_contour.text()),
+                'IB': float(self.txt_ib_contour.text()),
+                'IL': int(self.txt_il_contour.text())
+            },
+            'hatches': {
+                'pvz': int(self.txt_pvz_hatch.text()),
+                'v': float(self.txt_v_hatch.text()),
+                'IB': float(self.txt_ib_hatch.text()),
+                'IL': int(self.txt_il_hatch.text())
+            }
+        }
+        return parameters
 
     def check_infile(self):
         if self.txt_infile.text() == '':
@@ -282,7 +267,7 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
         else:
             return False
 
-    def save_vector_figures(self, silent=False):
+    def save_vector_figures(self):
         proc_layers = self.get_proc_layers()
         if not proc_layers:
             return
@@ -305,23 +290,21 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
             if s_only:
                 return
 
+        # hole Parameter ab
+        para = self.get_parameters()
+        # speichere alle Parameter
+        cf.save_parameters(para, save_dir)
 
-        v_hatch = float(self.txt_v_hatch.text())
-        pvz_hatch = int(self.txt_pvz_hatch.text())
-        ib_hatch = float(self.txt_ib_hatch.text())
-        il_hatch = int(self.txt_il_hatch.text())
+        v_hatch = para['hatch']['v']
+        pvz_hatch = para['hatch']['pvz']
 
-        v_contour = float(self.txt_v_contour.text())
-        pvz_contour = int(self.txt_pvz_contour.text())
-        ib_contour = float(self.txt_ib_contour.text())
-        il_contour = int(self.txt_il_contour.text())
+        v_contour = para['contour']['v']
+        pvz_contour = para['contour']['pvz']
 
-        v_rast = float(self.txt_v_rast.text())
-        build_dimension = float(self.txt_plate_size.text())/2
+        v_rast = para['rest']['v']
+        build_dimension = para['general']['plate_size']/2
 
-        parameters = {'plate_size': build_dimension*2}
 
-        cf.save_parameters(parameters, save_dir, 'general')
 
         for fig_type in ['contours', 'hatches']:
             for lay in proc_layers:
@@ -369,24 +352,10 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
 
                 cli.write_data(f'{l_name}.bxy', save_dir, output)
 
-            if fig_type == 'contours':
-                parameters = {
-                    'pvz': pvz_contour,
-                    'v': v_contour,
-                    'IB': ib_contour,
-                    'IL': il_contour
-                }
-            else:
-                parameters = {
-                    'pvz': pvz_hatch,
-                    'v': v_hatch,
-                    'IB': ib_hatch,
-                    'IL': il_hatch
-                }
-            cf.save_parameters(parameters, save_dir, fig_type)
-
             if not self.cb_quiet.isChecked():
                 BOX.show_info_box(f'Datei "{fig_type}" erfolgreich gespeichert')
+
+        BOX.show_info_box('Konvertierung erfolgreich')
 
     def debug(self, hidden=False):
         return
@@ -459,14 +428,5 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
     def proc_path(self, receiver, text):
         # Hier wird der Pfad in das Textfeld des 'receivers' geschrieben
         receiver.setText(text)
-
-    def un_highlight(self, field):
-        field.setStyleSheet('border: 1px solid black')
-        self.statusBar().setStyleSheet('color:black; font-weight:normal')
-
-    def highlight_field(self, field):
-        field.setStyleSheet('border: 2px solid red;')
-        self.statusBar().setStyleSheet('color:red; font-weight:bold')
-
 
 
