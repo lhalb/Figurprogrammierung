@@ -11,8 +11,8 @@ Code für Umwandlung:
 
 '''
 import sys
-from PyQt5 import QtWidgets
-from gui import startGUI, plotting, building, resting  # Hier den Namen der UI-Datei angeben
+from PyQt5 import QtWidgets, QtGui
+from gui import startGUI, plotting, building, resting, multiImport
 from gui import boxes as BOX
 import os
 from lib import cli_converter as cli
@@ -51,6 +51,7 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
         self.but_plot.clicked.connect(self.open_plot_dialog)
         self.but_convert_cli.clicked.connect(self.save_vector_figures)
         self.but_buildgenerator.clicked.connect(self.open_buildgenerator)
+        self.but_multi_import.clicked.connect(self.open_multi_import)
 
     def get_proc_layers(self):
         def max_or_min(vals, max_val, min_val=0):
@@ -68,7 +69,6 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
         # Wenn man eine Range angegeben hat
         elif ':' in txt:
             lay_range = txt.split(':')
-            print(lay_range)
             # Es gibt mehr oder weniger als zwei Werte
             if len(lay_range) != 2:
                 BOX.show_error_box('Falsche Range-Angabe')
@@ -152,12 +152,13 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
                     return
 
     def check_data(self):
-        check_flag = [False, False, False]
+        check_flag = [False, False, False, False]
 
         # [
         #   (Hatchdaten, Hatchvektoren)
         #   (Polylinedaten, Polylinevektoren)
         #   (Restpositiondaten, Restpositionvektoren)
+        #   (Layeranzahl)
         # ]
 
         checks = [(self.db.hatchlist, self.db.arrows),
@@ -177,21 +178,21 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
         transfer_data = {}
         # Teste, ob hatchlines enthalten sind
         if not check_data[0]:
-            transfer_data['hatches'] = None
+            transfer_data['hatches'] = []
         else:
-            transfer_data['hatches'] = self.db.arrows
+            transfer_data['hatches'] = [self.db.hatchlist, self.db.arrows]
 
         # Teste, ob es Polylines gibt
         if not check_data[1]:
-            transfer_data['polylines'] = None
+            transfer_data['polylines'] = []
         else:
-            transfer_data['polylines'] = self.db.pl_arrows
+            transfer_data['polylines'] = [self.db.polylist, self.db.pl_arrows]
 
         # Teste, ob Rastpositionen erstellt wurden
         if not check_data[2]:
-            transfer_data['rest'] = None
+            transfer_data['rest'] = []
         else:
-            transfer_data['rest'] = self.db.rp_arrows
+            transfer_data['rest'] = [self.db.rp_points, self.db.rp_arrows]
 
         return transfer_data
 
@@ -203,8 +204,18 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
 
     def open_rest_dialog(self):
         data = self.get_transfer_data()
-        rd = resting.RestDialog(data, )
-        return
+        if self.txt_layer.text() != 'all':
+            layers = self.get_proc_layers()
+        else:
+            layers = range(self.db.layers)
+        rd = resting.RestDialog(data, layers)
+        accepted = rd.exec_()
+        if accepted:
+            setattr(self.db, 'rp_points', rd.data['rest'][0])
+            setattr(self.db, 'rp_arrows', rd.data['rest'][1])
+
+        self.check_for_data(self.check_data())
+
 
     def get_parameters(self):
         parameters = {
@@ -264,6 +275,8 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
             self.txt_save_plot_folder.setText('output/plots')
             self.txt_save_vec_folder.setText('output/figures')
 
+            self.check_for_data(self.check_data())
+
         else:
             return False
 
@@ -278,7 +291,7 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
         save = self.cb_save_figures.isChecked()
         s_only = self.cb_save_only_plot.isChecked()
 
-        if hF.test_for_matching_files([save_dir], ['.bxy', '.ini']):
+        if any(hF.test_for_matching_files([save_dir], ['.bxy', '.ini'])):
             accepted = BOX.show_msg_box('Das gewählte Verzeichnis ist nicht leer.\n\nLöschen?')
             if accepted:
                 hF.delete_all_files_in_directory(save_dir)
@@ -295,16 +308,14 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
         # speichere alle Parameter
         cf.save_parameters(para, save_dir)
 
-        v_hatch = para['hatch']['v']
-        pvz_hatch = para['hatch']['pvz']
+        v_hatch = para['hatches']['v']
+        pvz_hatch = para['hatches']['pvz']
 
-        v_contour = para['contour']['v']
-        pvz_contour = para['contour']['pvz']
+        v_contour = para['contours']['v']
+        pvz_contour = para['contours']['pvz']
 
         v_rast = para['rest']['v']
         build_dimension = para['general']['plate_size']/2
-
-
 
         for fig_type in ['contours', 'hatches']:
             for lay in proc_layers:
@@ -371,6 +382,10 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
         bg = building.BuildGenerator()
         bg.exec_()
 
+    def open_multi_import(self):
+        mi = multiImport.MultiImport()
+        mi.exec_()
+
     def file_open(self):
         path = QtWidgets.QFileDialog.getOpenFileName(self, 'Gib den Pfad zur Datei an')[0]
         if path:
@@ -428,5 +443,18 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
     def proc_path(self, receiver, text):
         # Hier wird der Pfad in das Textfeld des 'receivers' geschrieben
         receiver.setText(text)
+
+    def check_for_data(self, data):
+        on_icon = QtGui.QIcon(":/img/img/green_light.png")
+        off_icon = QtGui.QIcon(":/img/img/red_light.png")
+
+        check_fields = [self.but_info_hatches, self.but_info_contours, self.but_info_rest]
+        check_data = data[:3]
+
+        for field, dat in zip(check_fields, check_data):
+            if dat:
+                field.setIcon(on_icon)
+            else:
+                field.setIcon(off_icon)
 
 

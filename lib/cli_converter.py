@@ -221,8 +221,7 @@ def combine_arrays(arrays):
 
 def write_data(fname, sdir, data):
     # falls das Verezichnis noch nicht existiert
-    if not os.path.exists(sdir):
-        os.makedirs(sdir)
+    hF.create_directory_if_needed(sdir)
 
     dest = os.path.join(sdir, fname)
 

@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
-        Dialog.resize(307, 212)
+        Dialog.resize(307, 239)
         self.verticalLayout = QtWidgets.QVBoxLayout(Dialog)
         self.verticalLayout.setObjectName("verticalLayout")
         self.horizontalLayout = QtWidgets.QHBoxLayout()
@@ -89,13 +89,29 @@ class Ui_Dialog(object):
         self.but_rast.setFocusPolicy(QtCore.Qt.TabFocus)
         self.but_rast.setObjectName("but_rast")
         self.gridLayout.addWidget(self.but_rast, 1, 0, 1, 1)
+        self.info_rp = QtWidgets.QPushButton(Dialog)
+        self.info_rp.setText("")
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(":/img/img/red_light.png"), QtGui.QIcon.Normal, QtGui.QIcon.On)
+        self.info_rp.setIcon(icon)
+        self.info_rp.setAutoDefault(False)
+        self.info_rp.setFlat(True)
+        self.info_rp.setObjectName("info_rp")
+        self.gridLayout.addWidget(self.info_rp, 3, 0, 1, 1)
         self.but_clear_rast = QtWidgets.QPushButton(Dialog)
         self.but_clear_rast.setObjectName("but_clear_rast")
-        self.gridLayout.addWidget(self.but_clear_rast, 3, 0, 1, 1)
+        self.gridLayout.addWidget(self.but_clear_rast, 5, 0, 1, 1)
         spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.gridLayout.addItem(spacerItem, 2, 0, 1, 1)
+        spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.gridLayout.addItem(spacerItem1, 4, 0, 1, 1)
         self.horizontalLayout.addLayout(self.gridLayout)
         self.verticalLayout.addLayout(self.horizontalLayout)
+        self.progressBar = QtWidgets.QProgressBar(Dialog)
+        self.progressBar.setProperty("value", 24)
+        self.progressBar.setTextDirection(QtWidgets.QProgressBar.TopToBottom)
+        self.progressBar.setObjectName("progressBar")
+        self.verticalLayout.addWidget(self.progressBar)
         self.buttonBox = QtWidgets.QDialogButtonBox(Dialog)
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel|QtWidgets.QDialogButtonBox.Ok)
@@ -110,7 +126,7 @@ class Ui_Dialog(object):
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
-        self.groupBox_4.setTitle(_translate("Dialog", "Einstellungen Ruhebereich"))
+        self.groupBox_4.setTitle(_translate("Dialog", "Settings Restarea"))
         self.label_17.setText(_translate("Dialog", "r_min"))
         self.label_12.setText(_translate("Dialog", "v"))
         self.label_15.setText(_translate("Dialog", "r_max"))
@@ -123,9 +139,11 @@ class Ui_Dialog(object):
         self.txt_r_max.setText(_translate("Dialog", "0,8"))
         self.txt_v_rast.setText(_translate("Dialog", "20000"))
         self.label_13.setText(_translate("Dialog", "mm/s"))
-        self.but_rast.setText(_translate("Dialog", "Ruhebereich erstellen"))
-        self.but_clear_rast.setText(_translate("Dialog", "Lösche\n"
-"Ruhebereich"))
+        self.but_rast.setText(_translate("Dialog", "Create\n"
+"Restarea"))
+        self.but_clear_rast.setText(_translate("Dialog", "Delete\n"
+"Restarea"))
+import icons_rc
 
 
 if __name__ == "__main__":

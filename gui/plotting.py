@@ -15,8 +15,8 @@ class PlotDialog(QtWidgets.QDialog, pg.Ui_Dialog):
 
         max_val = 1
         for k in self.data.keys():
-            if self.data[k] is not None:
-                max_val = len(self.data[k])
+            if self.data[k]:
+                max_val = len(self.data[k][1])
 
         self.max_layers = max_val - 1
 
@@ -67,53 +67,55 @@ class PlotDialog(QtWidgets.QDialog, pg.Ui_Dialog):
         self.update_label()
 
     def check_data(self):
-        if self.data['hatches'] is None:
-            self.cb_hatch.setEnabled(False)
-        else:
+        if self.data['hatches']:
             self.cb_hatch.setEnabled(True)
-        if self.data['polylines'] is None:
-            self.cb_poly.setEnabled(False)
         else:
+            self.cb_hatch.setEnabled(False)
+        if self.data['polylines']:
             self.cb_poly.setEnabled(True)
-        if self.data['rest'] is None:
-            self.cb_rest.setEnabled(False)
         else:
+            self.cb_poly.setEnabled(False)
+        if self.data['rest']:
             self.cb_rest.setEnabled(True)
+        else:
+            self.cb_rest.setEnabled(False)
 
     def plot_data(self):
-        def plot_arrows(data, color='k', a=1.0):
-            x = data[:, 0]
-            y = data[:, 1]
-            u = data[:, 2]
-            v = data[:, 3]
+        def plot_arrows(ax, d, color='k', a=1.0):
+            x = d[:, 0]
+            y = d[:, 1]
+            u = d[:, 2]
+            v = d[:, 3]
 
-            self.data_ax.quiver(x, y, u, v,
-                                color=color,
-                                angles='xy',
-                                scale_units='xy',
-                                scale=1,
-                                width=0.005,
-                                headwidth=5,
-                                alpha=a
-                                )
+            ax.quiver(x, y, u, v,
+                      color=color,
+                      angles='xy',
+                      scale_units='xy',
+                      scale=1,
+                      width=0.005,
+                      headwidth=5,
+                      alpha=a
+                      )
         # lösche die alten Daten
-        self.data_ax.clear()
+        pax = self.data_ax
+        pax.clear()
 
         cl = int(self.txt_curr_layer.text())
         if cl > self.max_layers:
             return
+
         if self.cb_poly.isChecked():
-            data = self.data['polylines'][cl]
-            plot_arrows(data, color='tab:red')
-            self.data_ax.plot(data[0, 0], data[0, 1],
-                              marker='o', ms=5, mec='tab:red', mfc='w', mew=2)
+            data = self.data['polylines'][1][cl]
+            plot_arrows(pax, data, color='tab:red')
+            pax.plot(data[0, 0], data[0, 1],
+                     marker='o', ms=5, mec='tab:red', mfc='w', mew=2)
         if self.cb_hatch.isChecked():
-            data = self.data['hatches'][cl]
-            plot_arrows(data, color='k')
-            self.data_ax.plot(data[0, 0], data[0, 1],
-                              marker='o', ms=5, mec='k', mfc='w', mew=2)
+            data = self.data['hatches'][1][cl]
+            plot_arrows(pax, data, color='k')
+            pax.plot(data[0, 0], data[0, 1],
+                     marker='o', ms=5, mec='k', mfc='w', mew=2)
         if self.cb_rest.isChecked():
-            plot_arrows(self.data['rest'][cl], color='tab:orange', a=0.1)
+            plot_arrows(pax, self.data['rest'][1][cl], color='tab:orange', a=0.1)
 
         self.pw.fig.tight_layout()
         self.pw.draw_idle()

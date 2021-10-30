@@ -23,11 +23,14 @@ def load_parameters(dest, filename='para.ini'):
     return config
 
 
-def save_parameters(p, dest, section):
+def save_parameters(p, dest, section=''):
     if not os.path.exists(dest):
         os.makedirs(dest)
     config = configparser.ConfigParser()
-    config[section] = p
+    if section == '':
+        config.read_dict(p)
+    else:
+        config[section] = p
 
     fname = dest + '/para.ini'
 

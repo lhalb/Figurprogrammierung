@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>484</width>
-    <height>661</height>
+    <height>690</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,6 +23,25 @@
       <property name="bottomMargin">
        <number>0</number>
       </property>
+      <item>
+       <widget class="QPushButton" name="but_multi_import">
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="toolTip">
+         <string>Tool, um mehrere CLI-Dateien gleichzeitig zu konvertieren</string>
+        </property>
+        <property name="text">
+         <string>Import multiple CLI-Files</string>
+        </property>
+        <property name="shortcut">
+         <string>Ctrl+Shift+O</string>
+        </property>
+       </widget>
+      </item>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
@@ -310,20 +329,83 @@
              </spacer>
             </item>
             <item>
-             <spacer name="horizontalSpacer_2">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeType">
-               <enum>QSizePolicy::Expanding</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
+             <layout class="QGridLayout" name="gridLayout_6">
+              <item row="0" column="1" alignment="Qt::AlignLeft">
+               <widget class="QLabel" name="label_13">
+                <property name="text">
+                 <string>Hatches</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1" alignment="Qt::AlignLeft">
+               <widget class="QLabel" name="label_12">
+                <property name="text">
+                 <string>Contours</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1" alignment="Qt::AlignLeft">
+               <widget class="QLabel" name="label_10">
+                <property name="text">
+                 <string>Restpositions</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QPushButton" name="but_info_rest">
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset>
+                  <normalon>:/img/img/red_light.png</normalon>
+                 </iconset>
+                </property>
+                <property name="autoDefault">
+                 <bool>false</bool>
+                </property>
+                <property name="flat">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QPushButton" name="but_info_contours">
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset>
+                  <normalon>:/img/img/red_light.png</normalon>
+                 </iconset>
+                </property>
+                <property name="autoDefault">
+                 <bool>false</bool>
+                </property>
+                <property name="flat">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QPushButton" name="but_info_hatches">
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset>
+                  <normalon>:/img/img/red_light.png</normalon>
+                 </iconset>
+                </property>
+                <property name="autoDefault">
+                 <bool>false</bool>
+                </property>
+                <property name="flat">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </item>
            </layout>
           </item>
@@ -789,6 +871,12 @@
                  <string>Konvertiere
 CLI --&gt; .bxy</string>
                 </property>
+                <property name="autoDefault">
+                 <bool>true</bool>
+                </property>
+                <property name="default">
+                 <bool>true</bool>
+                </property>
                </widget>
               </item>
               <item row="2" column="0">
@@ -953,6 +1041,9 @@ CLI --&gt; .bxy</string>
         <property name="shortcut">
          <string>Ctrl+B</string>
         </property>
+        <property name="autoDefault">
+         <bool>true</bool>
+        </property>
        </widget>
       </item>
      </layout>
@@ -1018,22 +1109,36 @@ CLI --&gt; .bxy</string>
  <tabstops>
   <tabstop>txt_infile</tabstop>
   <tabstop>but_open</tabstop>
-  <tabstop>txt_v_hatch</tabstop>
-  <tabstop>txt_ib_hatch</tabstop>
-  <tabstop>txt_il_hatch</tabstop>
+  <tabstop>tabs</tabstop>
+  <tabstop>txt_plate_size</tabstop>
+  <tabstop>txt_v_rast</tabstop>
   <tabstop>txt_outname</tabstop>
   <tabstop>but_outname</tabstop>
   <tabstop>txt_save_plot_folder</tabstop>
   <tabstop>but_save_plot_folder</tabstop>
   <tabstop>txt_save_vec_folder</tabstop>
   <tabstop>but_save_vec_folder</tabstop>
-  <tabstop>cb_save_figures</tabstop>
-  <tabstop>cb_save_only_plot</tabstop>
+  <tabstop>txt_v_hatch</tabstop>
+  <tabstop>txt_pvz_hatch</tabstop>
+  <tabstop>txt_ib_hatch</tabstop>
+  <tabstop>txt_il_hatch</tabstop>
+  <tabstop>txt_v_contour</tabstop>
+  <tabstop>txt_pvz_contour</tabstop>
+  <tabstop>txt_ib_contour</tabstop>
+  <tabstop>txt_il_contour</tabstop>
+  <tabstop>but_conv_bxy</tabstop>
+  <tabstop>cb_quiet</tabstop>
   <tabstop>txt_layer</tabstop>
   <tabstop>but_convert_cli</tabstop>
-  <tabstop>but_conv_bxy</tabstop>
+  <tabstop>cb_save_figures</tabstop>
+  <tabstop>cb_save_only_plot</tabstop>
+  <tabstop>but_plot</tabstop>
+  <tabstop>but_rest_dialog</tabstop>
+  <tabstop>but_buildgenerator</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../icons.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>actionSchlie_en</sender>

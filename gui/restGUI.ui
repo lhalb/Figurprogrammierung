@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>307</width>
-    <height>212</height>
+    <height>239</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -25,7 +25,7 @@
      <item>
       <widget class="QGroupBox" name="groupBox_4">
        <property name="title">
-        <string>Einstellungen Ruhebereich</string>
+        <string>Settings Restarea</string>
        </property>
        <layout class="QHBoxLayout" name="horizontalLayout_9">
         <item>
@@ -192,15 +192,34 @@
           <enum>Qt::TabFocus</enum>
          </property>
          <property name="text">
-          <string>Ruhebereich erstellen</string>
+          <string>Create
+Restarea</string>
          </property>
         </widget>
        </item>
        <item row="3" column="0">
+        <widget class="QPushButton" name="info_rp">
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normalon>:/img/img/red_light.png</normalon>
+          </iconset>
+         </property>
+         <property name="autoDefault">
+          <bool>false</bool>
+         </property>
+         <property name="flat">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0">
         <widget class="QPushButton" name="but_clear_rast">
          <property name="text">
-          <string>Lösche
-Ruhebereich</string>
+          <string>Delete
+Restarea</string>
          </property>
         </widget>
        </item>
@@ -217,9 +236,32 @@ Ruhebereich</string>
          </property>
         </spacer>
        </item>
+       <item row="4" column="0">
+        <spacer name="verticalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
       </layout>
      </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QProgressBar" name="progressBar">
+     <property name="value">
+      <number>24</number>
+     </property>
+     <property name="textDirection">
+      <enum>QProgressBar::TopToBottom</enum>
+     </property>
+    </widget>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
@@ -233,7 +275,9 @@ Ruhebereich</string>
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../icons.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>
