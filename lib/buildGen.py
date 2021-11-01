@@ -4,7 +4,7 @@ from gui import boxes as BOX
 from lib import helperFunctions as hF
 
 
-def process_folder_list(fl, param_data, b_directory=None, hatches_first=False):
+def process_folder_list(fl, param_data, b_directory=None, hatches_first=False, old_files=False):
     if b_directory == '':
         BOX.show_error_box('Kein Zielverzeichnis angegeben!')
         return False
@@ -64,7 +64,11 @@ def process_folder_list(fl, param_data, b_directory=None, hatches_first=False):
             section += 1
 
         for i, fig in enumerate(layer_figures):
-            new_name = f'{fig_nr}.bxy'
+            if old_files:
+                ext = '.b00'
+            else:
+                ext = '.bxy'
+            new_name = f'{fig_nr}{ext}'
             new_dest = b_directory + '/' + new_name
             copyfile(fig, new_dest)
             fig_nr += 1

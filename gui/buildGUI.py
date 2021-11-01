@@ -125,6 +125,9 @@ class Ui_Dialog(object):
         self.horizontalLayout_2.addLayout(self.horizontalLayout_4)
         spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem1)
+        self.cb_oldfilename = QtWidgets.QCheckBox(Dialog)
+        self.cb_oldfilename.setObjectName("cb_oldfilename")
+        self.horizontalLayout_2.addWidget(self.cb_oldfilename)
         self.but_generate_build_job = QtWidgets.QPushButton(Dialog)
         self.but_generate_build_job.setMinimumSize(QtCore.QSize(120, 60))
         self.but_generate_build_job.setDefault(True)
@@ -166,6 +169,7 @@ class Ui_Dialog(object):
         self.label.setText(_translate("Dialog", "Ziel"))
         self.but_destination.setText(_translate("Dialog", "..."))
         self.but_destination.setShortcut(_translate("Dialog", "Ctrl+S"))
+        self.cb_oldfilename.setText(_translate("Dialog", "Old Filename"))
         self.but_generate_build_job.setText(_translate("Dialog", "Generate Build Job"))
 
 
