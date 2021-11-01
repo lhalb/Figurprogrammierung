@@ -113,8 +113,9 @@ class BuildGenerator(QtWidgets.QDialog, bG.Ui_Dialog):
             dest = self.txt_destination.text()
             hatch_first = self.cb_hatch_first.isChecked()
             old_file_names = self.cb_oldfilename.isChecked()
+            pb = self.pb_layers
             success = bGe.process_folder_list(flist, parameters, b_directory=dest,
-                                              hatches_first=hatch_first, old_files=old_file_names)
+                                              hatches_first=hatch_first, old_files=old_file_names, pb=pb)
             if success:
                 BOX.show_info_box('Baujob erfolgreich erstellt.')
 

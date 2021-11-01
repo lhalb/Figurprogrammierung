@@ -288,15 +288,9 @@ Folders</string>
       </spacer>
      </item>
      <item>
-      <widget class="QProgressBar" name="pb_layers">
-       <property name="minimumSize">
-        <size>
-         <width>250</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="value">
-        <number>24</number>
+      <widget class="QLabel" name="status_label">
+       <property name="text">
+        <string>Working...</string>
        </property>
       </widget>
      </item>

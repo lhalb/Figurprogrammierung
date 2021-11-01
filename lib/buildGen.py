@@ -4,7 +4,7 @@ from gui import boxes as BOX
 from lib import helperFunctions as hF
 
 
-def process_folder_list(fl, param_data, b_directory=None, hatches_first=False, old_files=False):
+def process_folder_list(fl, param_data, b_directory=None, hatches_first=False, old_files=False, status_label=None):
     if b_directory == '':
         BOX.show_error_box('Kein Zielverzeichnis angegeben!')
         return False
@@ -20,6 +20,9 @@ def process_folder_list(fl, param_data, b_directory=None, hatches_first=False, o
     no_layers_left = False
     figures_in_layer_before = 0
     section = 1
+
+    # Initialise Progress Bar
+
 
     while not no_layers_left:
         layer_figures = []
