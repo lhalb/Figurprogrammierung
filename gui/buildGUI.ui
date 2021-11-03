@@ -42,6 +42,9 @@
          <height>60</height>
         </size>
        </property>
+       <property name="toolTip">
+        <string>(Strg + O)</string>
+       </property>
        <property name="text">
         <string>Load
 Folders</string>
@@ -141,45 +144,72 @@ Folders</string>
          <property name="text">
           <string>Pos.</string>
          </property>
+         <property name="toolTip">
+          <string>Position (für Wahl der Reihenfolge)</string>
+         </property>
         </column>
         <column>
          <property name="text">
           <string>PVZ-C</string>
+         </property>
+         <property name="toolTip">
+          <string>Punktverzögerung Kontur [ns]</string>
          </property>
         </column>
         <column>
          <property name="text">
           <string>IB-C</string>
          </property>
+         <property name="toolTip">
+          <string>Strahlstrom Kontur [mA]</string>
+         </property>
         </column>
         <column>
          <property name="text">
           <string>IL-C</string>
+         </property>
+         <property name="toolTip">
+          <string>Linsenstrom Kontur [mA]</string>
          </property>
         </column>
         <column>
          <property name="text">
           <string>PVZ-H</string>
          </property>
+         <property name="toolTip">
+          <string>Punktverzögerung Hatch [ns]</string>
+         </property>
         </column>
         <column>
          <property name="text">
           <string>IB-H</string>
+         </property>
+         <property name="toolTip">
+          <string>Strahlstrom Hatch [mA]</string>
          </property>
         </column>
         <column>
          <property name="text">
           <string>IL-H</string>
          </property>
+         <property name="toolTip">
+          <string>Linsenstrom Hatch [mA]</string>
+         </property>
         </column>
         <column>
          <property name="text">
           <string>SIZE</string>
          </property>
+         <property name="toolTip">
+          <string>Arbeitsfeldgröße [mm]</string>
+         </property>
         </column>
         <column>
          <property name="text">
           <string>Name</string>
+         </property>
+         <property name="toolTip">
+          <string>Pfad zur Datei</string>
          </property>
         </column>
        </widget>
@@ -207,6 +237,9 @@ Folders</string>
         </property>
         <item>
          <widget class="QCheckBox" name="cb_hatch_first">
+          <property name="toolTip">
+           <string>Bearbeitet die Dateien so, dass Hatches VOR Konturen geschmolzen werden</string>
+          </property>
           <property name="text">
            <string>Hatches first</string>
           </property>
@@ -255,6 +288,9 @@ Folders</string>
        </item>
        <item>
         <widget class="QToolButton" name="but_destination">
+         <property name="toolTip">
+          <string>(Strg + S)</string>
+         </property>
          <property name="text">
           <string>...</string>
          </property>
@@ -295,6 +331,22 @@ Folders</string>
       </widget>
      </item>
      <item>
+      <widget class="QLabel" name="gif_label">
+       <property name="maximumSize">
+        <size>
+         <width>200</width>
+         <height>200</height>
+        </size>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -309,6 +361,9 @@ Folders</string>
      </item>
      <item>
       <widget class="QCheckBox" name="cb_oldfilename">
+       <property name="toolTip">
+        <string>Erzeugt .b00 statt .bxy Dateien (für alte MMC-Software)</string>
+       </property>
        <property name="text">
         <string>Old Filename</string>
        </property>
@@ -322,11 +377,20 @@ Folders</string>
          <height>60</height>
         </size>
        </property>
+       <property name="toolTip">
+        <string>(Strg + Alt + G)</string>
+       </property>
        <property name="text">
         <string>Generate Build Job</string>
        </property>
+       <property name="shortcut">
+        <string>Ctrl+Alt+G</string>
+       </property>
+       <property name="autoDefault">
+        <bool>false</bool>
+       </property>
        <property name="default">
-        <bool>true</bool>
+        <bool>false</bool>
        </property>
       </widget>
      </item>

@@ -46,6 +46,10 @@ class MultiImport(QtWidgets.QDialog, mIG.Ui_Dialog):
 
     def convert_files(self):
         tab = self.table_parameters
+        if tab.rowCount() == 0:
+            BOX.show_error_box('Keine Dateien geladen!')
+            return
+
         for line in range(tab.rowCount()):
             success = True
             fname = tab.item(line, 10).text()

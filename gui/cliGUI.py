@@ -216,7 +216,6 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
 
         self.check_for_data(self.check_data())
 
-
     def get_parameters(self):
         parameters = {
             'rest': {
@@ -242,7 +241,6 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
 
     def check_infile(self):
         if self.txt_infile.text() == '':
-            self.highlight_field(self.txt_infile)
             BOX.show_error_box('Keine Datei angegeben.')
             return False
         else:
@@ -259,15 +257,20 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
             setattr(self.db, 'layers', lays)
             self.set_layer_anz(lays)
 
-            if p_list:
-                pl, p_arr = cli.convert_polylines(lays, p_list)
-                setattr(self.db, 'polylist', pl)
-                setattr(self.db, 'pl_arrows', p_arr)
+            try:
+                if p_list:
+                    pl, p_arr = cli.convert_polylines(lays, p_list)
+                    setattr(self.db, 'polylist', pl)
+                    setattr(self.db, 'pl_arrows', p_arr)
 
-            if h_list:
-                hl, arr = cli.convert_hatches(lays, h_list)
-                setattr(self.db, 'hatchlist', hl)
-                setattr(self.db, 'arrows', arr)
+                if h_list:
+                    hl, arr = cli.convert_hatches(lays, h_list)
+                    setattr(self.db, 'hatchlist', hl)
+                    setattr(self.db, 'arrows', arr)
+
+            except IndexError:
+                BOX.show_error_box('Die Datei enthält leere Layer.')
+                return False
 
             name, _ = os.path.splitext(os.path.basename(fname))
 
@@ -290,6 +293,8 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
         save_dir = vec_dir + '/' + cli_name
         save = self.cb_save_figures.isChecked()
         s_only = self.cb_save_only_plot.isChecked()
+
+        hF.create_directory_if_needed(save_dir)
 
         if any(hF.test_for_matching_files([save_dir], ['.bxy', '.ini'])):
             accepted = BOX.show_msg_box('Das gewählte Verzeichnis ist nicht leer.\n\nLöschen?')
@@ -422,13 +427,16 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
 
         # Hier wird getestet, welche Datei angegeben wurde.
         if file_extension == '.cli':
+            ret_val = self.load_cli_file()
+            if not ret_val:
+                return
+
             self.tabs.show()
             # self.setFixedSize(self.full_window.sizeHint())
             self.tabs.setCurrentIndex(0)
             self.tabs.setTabEnabled(0, True)
             self.tabs.setTabEnabled(1, False)
 
-            self.load_cli_file()
             BOX.show_info_box(f'Datei erfolgreich geladen.')
 
         elif '.b' in file_extension:
@@ -439,6 +447,8 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
             self.tabs.setTabEnabled(1, True)
         else:
             BOX.show_error_box('Dieser Dateityp wird nicht unterstützt')
+
+
 
     def proc_path(self, receiver, text):
         # Hier wird der Pfad in das Textfeld des 'receivers' geschrieben

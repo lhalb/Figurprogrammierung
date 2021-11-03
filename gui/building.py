@@ -1,10 +1,12 @@
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QTableWidgetItem as QTI
+from PyQt5.QtGui import QMovie
 from gui import buildGUI as bG
 from gui import boxes as BOX
 from lib import config as cf
 from lib import buildGen as bGe
 from lib import helperFunctions as hF
+import os
 
 
 class BuildGenerator(QtWidgets.QDialog, bG.Ui_Dialog):
@@ -12,6 +14,10 @@ class BuildGenerator(QtWidgets.QDialog, bG.Ui_Dialog):
         super(BuildGenerator, self).__init__()
         self.setupUi(self)
         self.setup_triggers()
+
+        self.status_label.hide()
+        # self.gif_label.hide()
+
 
     def setup_triggers(self):
         self.but_load_folders.clicked.connect(self.load_data)
@@ -64,6 +70,7 @@ class BuildGenerator(QtWidgets.QDialog, bG.Ui_Dialog):
         order = ', '.join(orderlist)
 
         self.txt_user_order.setText(order)
+        self.txt_destination.setText('output/job')
 
     def get_folders(self):
         fd = FileDialog()
@@ -111,13 +118,36 @@ class BuildGenerator(QtWidgets.QDialog, bG.Ui_Dialog):
 
         try:
             dest = self.txt_destination.text()
+
+            if dest == '':
+                BOX.show_error_box('Kein Zielverzeichnis angegeben!')
+                return
+
+            if not os.path.isabs(dest):
+                dest = os.path.abspath(dest)
+
             hatch_first = self.cb_hatch_first.isChecked()
             old_file_names = self.cb_oldfilename.isChecked()
-            pb = self.pb_layers
+
+            gif = QMovie("C:/Users/halbauer/Desktop/loading_2.gif")
+            self.gif_label.setMovie(gif)
+            # self.gif_label.show()
+            # gif.start()
+            accepted = BOX.show_msg_box('Der Inhalt des Ordners wird gelöscht.\nFortfahren?')
+            if accepted:
+                hF.delete_all_files_in_directory(dest)
+            else:
+                return
+
             success = bGe.process_folder_list(flist, parameters, b_directory=dest,
-                                              hatches_first=hatch_first, old_files=old_file_names, pb=pb)
+                                              hatches_first=hatch_first, old_files=old_file_names, pb=gif)
+
+            gif.stop()
+
             if success:
                 BOX.show_info_box('Baujob erfolgreich erstellt.')
+            else:
+                BOX.show_error_box('Es gab Fehler')
 
         except FileNotFoundError as FE:
             print(FE)

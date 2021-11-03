@@ -6,7 +6,6 @@ import os
 matplotlib.use('Qt5agg')
 
 
-
 def load_data(file):
     with open(file) as f:
         lines = f.readlines()
@@ -32,6 +31,8 @@ def convert_hatches(layers, hatchlines):
 
         hatchlist[i] = data
         arrowlist[i] = arr
+
+
 
     return hatchlist, arrowlist
 

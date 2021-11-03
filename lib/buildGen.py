@@ -4,27 +4,15 @@ from gui import boxes as BOX
 from lib import helperFunctions as hF
 
 
-def process_folder_list(fl, param_data, b_directory=None, hatches_first=False, old_files=False, status_label=None):
-    if b_directory == '':
-        BOX.show_error_box('Kein Zielverzeichnis angegeben!')
-        return False
-
-    accepted = BOX.show_msg_box('Der Inhalt des Ordners wird gelöscht.\nFortfahren?')
-    if not accepted:
-        return False
-
-    hF.delete_all_files_in_directory(b_directory)
-
+def process_folder_list(fl, param_data, b_directory=None, hatches_first=False, old_files=False):
     current_layer = 0
     fig_nr = 1
     no_layers_left = False
     figures_in_layer_before = 0
     section = 1
 
-    # Initialise Progress Bar
-
-
     while not no_layers_left:
+
         layer_figures = []
 
         # gehe nur durch die Ordner, die noch Daten enthalten (Ordner ohne Daten werden auf "None" gesetzt
