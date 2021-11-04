@@ -432,7 +432,6 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
         # Hier wird getestet, welche Datei angegeben wurde.
         if file_extension == '.cli':
             ret_val = self.load_cli_file()
-            print(ret_val)
             if not ret_val:
                 BOX.show_error_box('Es gab einen Fehler beim Laden!')
                 return

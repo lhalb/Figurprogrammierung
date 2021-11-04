@@ -5,6 +5,7 @@ from lib import helperFunctions as hF
 from lib import cli_converter as cli
 from lib import config as cfg
 from gui import boxes as BOX
+import numpy as np
 
 
 class MultiImport(QtWidgets.QDialog, mIG.Ui_Dialog):
@@ -151,7 +152,10 @@ class MultiImport(QtWidgets.QDialog, mIG.Ui_Dialog):
                     else:
                         arrow = arr[lay]
 
-                    arrow_conv = cli.convert_to_volt(arrow, factor=build_dimension)
+                    arr_strt = cli.convert_to_volt_abs(arrow[:, :2], build_dimension)
+                    arr_end = cli.convert_to_volt_rel(arrow[:, 2:], build_dimension * 2)
+
+                    arrow_conv = np.hstack((arr_strt, arr_end))
                     if fig_type == 'contours':
                         vec = cli.generate_contour_data(arrow_conv,
                                                         v=v_contour,

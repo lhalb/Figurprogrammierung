@@ -1,6 +1,5 @@
 import os
 from shutil import copyfile
-from gui import boxes as BOX
 from lib import helperFunctions as hF
 
 
