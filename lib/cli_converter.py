@@ -61,9 +61,13 @@ def convert_polylines(layers, list_of_polylines):
     return polylist, arrowlist
 
 
-def convert_to_volt(data, factor=1):
-    max_distance_at_one_volt = factor
-    return data/max_distance_at_one_volt
+def convert_to_vol_rel(data, factor=1):
+    return data/factor
+
+
+def convert_to_volt_abs(data, factor=1):
+    shifted_data = data - factor
+    return shifted_data/factor
 
 
 def make_rest_positions(d, v=100, time=2, rp_min=0.3, rp_max=0.7, exact=4, verbose=False):

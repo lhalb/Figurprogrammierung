@@ -331,10 +331,16 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
                     rp_arrows = self.db.rp_arrows[lay]
                     # nehme nur die Startpunkte jedes Pfeils
                     arr_strt = rp_arrows[:, 0, :2].reshape(len(rp_arrows), -1)
+                    conv_arr_strt = cli.convert_to_volt_abs(arr_strt, build_dimension)
                     # nehme die Richtungsvektoren
                     arr_end = rp_arrows[:, :, 2:].reshape(len(rp_arrows), -1)
+                    conv_arr_end = cli.convert_to_volt_rel(arr_end, build_dimension*2)
+
+
+
                     # Füge beide zusammen
                     rp_arr = np.hstack((arr_strt, arr_end))
+
 
                     rp_arr_conv = cli.convert_to_volt(rp_arr, factor=build_dimension)
                     vec_rast = cli.generate_hatch_data(rp_arr_conv,

@@ -324,29 +324,6 @@ Folders</string>
       </spacer>
      </item>
      <item>
-      <widget class="QLabel" name="status_label">
-       <property name="text">
-        <string>Working...</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="gif_label">
-       <property name="maximumSize">
-        <size>
-         <width>200</width>
-         <height>200</height>
-        </size>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="scaledContents">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
