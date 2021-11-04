@@ -273,13 +273,12 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
                 return False
 
             name, _ = os.path.splitext(os.path.basename(fname))
-
             self.txt_outname.setText(name)
             self.txt_save_plot_folder.setText('output/plots')
             self.txt_save_vec_folder.setText('output/figures')
 
             self.check_for_data(self.check_data())
-
+            return True
         else:
             return False
 
@@ -336,14 +335,10 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
                     arr_end = rp_arrows[:, :, 2:].reshape(len(rp_arrows), -1)
                     conv_arr_end = cli.convert_to_volt_rel(arr_end, build_dimension*2)
 
-
-
                     # Füge beide zusammen
-                    rp_arr = np.hstack((arr_strt, arr_end))
+                    rp_arr = np.hstack((conv_arr_strt, conv_arr_end))
 
-
-                    rp_arr_conv = cli.convert_to_volt(rp_arr, factor=build_dimension)
-                    vec_rast = cli.generate_hatch_data(rp_arr_conv,
+                    vec_rast = cli.generate_hatch_data(rp_arr,
                                                        rest=True,
                                                        v=v_rast,
                                                        pvz=pvz_hatch)
@@ -359,7 +354,10 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
                 else:
                     continue
 
-                arrow_conv = cli.convert_to_volt(arrow, factor=build_dimension)
+                arr_strt = cli.convert_to_volt_abs(arrow[:, :2], build_dimension)
+                arr_end = cli.convert_to_volt_rel(arrow[:, 2:], build_dimension*2)
+
+                arrow_conv = np.hstack((arr_strt, arr_end))
                 if fig_type == 'contours':
                     vec = cli.generate_contour_data(arrow_conv,
                                                     v=v_contour,
@@ -434,7 +432,9 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
         # Hier wird getestet, welche Datei angegeben wurde.
         if file_extension == '.cli':
             ret_val = self.load_cli_file()
+            print(ret_val)
             if not ret_val:
+                BOX.show_error_box('Es gab einen Fehler beim Laden!')
                 return
 
             self.tabs.show()

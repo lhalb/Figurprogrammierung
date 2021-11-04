@@ -61,7 +61,7 @@ def convert_polylines(layers, list_of_polylines):
     return polylist, arrowlist
 
 
-def convert_to_vol_rel(data, factor=1):
+def convert_to_volt_rel(data, factor=1):
     return data/factor
 
 
