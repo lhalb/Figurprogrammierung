@@ -19,11 +19,12 @@ def save_config(fname, data):
 def load_parameters(dest, filename='para.ini'):
     config = configparser.ConfigParser()
     fname = dest + '/' + filename
+    print(fname)
     config.read(fname)
     return config
 
 
-def save_parameters(p, dest, section=''):
+def save_parameters(p, dest, section='', filename=None):
     if not os.path.exists(dest):
         os.makedirs(dest)
     config = configparser.ConfigParser()
@@ -32,7 +33,10 @@ def save_parameters(p, dest, section=''):
     else:
         config[section] = p
 
-    fname = dest + '/para.ini'
+    if not filename:
+        fname = dest + '/para.ini'
+    else:
+        fname = dest + '/' + filename
 
     mode = hF.get_mode(fname)
     with open(fname, mode) as cf:

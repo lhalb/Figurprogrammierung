@@ -5,6 +5,7 @@ from lib import helperFunctions as hF
 from lib import cli_converter as cli
 from lib import config as cfg
 from gui import boxes as BOX
+import os
 import numpy as np
 
 
@@ -18,6 +19,8 @@ class MultiImport(QtWidgets.QDialog, mIG.Ui_Dialog):
         self.but_load_files.clicked.connect(self.open_files)
         self.but_output_folder.clicked.connect(self.get_save_directory)
         self.but_convert_files.clicked.connect(self.convert_files)
+        self.but_save_set.clicked.connect(self.save_settings)
+        self.but_load_set.clicked.connect(self.load_from_settings)
 
     def open_files(self):
         files = QtWidgets.QFileDialog.getOpenFileNames(self, 'Wähle die CLI-Dateien aus', '', 'CLI-Files (*.cli)')[0]
@@ -27,7 +30,51 @@ class MultiImport(QtWidgets.QDialog, mIG.Ui_Dialog):
         self.write_to_table(files)
         self.txt_output_folder.setText('output/multifigures')
 
-    def write_to_table(self, filelist, params=None):
+    def load_from_settings(self):
+        ini_file = QtWidgets.QFileDialog.getOpenFileName(self, "Pfad zur .ini-Datei", '', 'INI-Files (*.ini)')[0]
+        if not ini_file:
+            return
+        folder = hF.get_foldername(ini_file)
+
+        para = cfg.load_parameters(folder, filename=hF.get_file_with_extension(ini_file))
+
+        tab = self.table_parameters
+        tab.setRowCount(len(para.sections()))
+
+        for sec in para.sections():
+            for each_key, each_item in para.items(sec):
+
+
+
+    def save_settings(self):
+        outfolder = QtWidgets.QFileDialog.getExistingDirectory(self, 'Wo sollen die Einstellungen gespeichert werden?')
+        if not outfolder:
+            return
+
+        fname = 'multi_settings.ini'
+
+        file_exists = hF.check_for_existing_file(outfolder + '/' + fname)
+        if file_exists:
+            ret_val = BOX.show_msg_box('Datei existiert bereits.\nÜberschreiben?')
+            if not ret_val:
+                return
+            else:
+                os.remove(outfolder + '/' + fname)
+
+        tab = self.table_parameters
+        para = {}
+        for i in range(tab.rowCount()):
+            secname = tab.item(i, 9).text().lower()
+            settings = ['v-C', 'PVZ-C', 'IB-C', 'IL-C', 'v-H', 'PVZ-H', 'IB-H', 'IL-H', 'SIZE', 'Name', 'Path']
+            para[secname] = {}
+            for j, s in enumerate(settings):
+                para[secname][s] = tab.item(i, j).text()
+
+        cfg.save_parameters(para, outfolder, filename=fname)
+
+        BOX.show_info_box('Einstellungen erfolgreich gespeichert')
+
+    def write_to_table(self, filelist=None, params=None):
         tab = self.table_parameters
         tab.setRowCount(len(filelist))
         if not params:
@@ -37,6 +84,10 @@ class MultiImport(QtWidgets.QDialog, mIG.Ui_Dialog):
                     tab.setItem(i, j, QTI('-'))
                 tab.setItem(i, 9, QTI(foldername))
                 tab.setItem(i, 10, QTI(file))
+        else:
+            for i, sec in enumerate(params.keys()):
+                for j, par in enumerate(params[sec].keys()):
+                    tab.setItem(i, j, QTI(str(params[sec][par])))
 
     def get_save_directory(self):
         outfolder = QtWidgets.QFileDialog.getExistingDirectory(self, 'Wo sollen die Dateien gespeichert werden?')
@@ -155,7 +206,7 @@ class MultiImport(QtWidgets.QDialog, mIG.Ui_Dialog):
                     arr_strt = cli.convert_to_volt_abs(arrow[:, :2], build_dimension)
                     arr_end = cli.convert_to_volt_rel(arrow[:, 2:], build_dimension * 2)
 
-                    arrow_conv = np.hstack((arr_strt, arr_end))
+                    arrow_conv = cli.rotate(np.hstack((arr_strt, arr_end)), degrees=270)
                     if fig_type == 'contours':
                         vec = cli.generate_contour_data(arrow_conv,
                                                         v=v_contour,

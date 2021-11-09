@@ -1,6 +1,7 @@
 import os
 import fnmatch
 from itertools import groupby
+import gui.boxes as BOX
 
 
 # Function to use boolean masks on lists
@@ -55,3 +56,18 @@ def all_equal(iterable):
 
 def get_filename(path):
     return os.path.split(path)[1].split('.')[0]
+
+
+def get_foldername(path):
+    return os.path.dirname(path)
+
+
+def get_file_with_extension(path):
+    return os.path.split(path)[1]
+
+
+def check_for_existing_file(path):
+    if os.path.exists(path):
+        return True
+    else:
+        return False
