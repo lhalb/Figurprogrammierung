@@ -252,6 +252,15 @@ def generate_output(strings, comment='default'):
     return output
 
 
+def rotate(p, origin=(0, 0), degrees=90):
+    angle = np.deg2rad(degrees)
+    rot = np.array([[np.cos(angle), -np.sin(angle)],
+                    [np.sin(angle),  np.cos(angle)]])
+    o = np.atleast_2d(origin)
+    p = np.atleast_2d(p)
+    return np.squeeze((rot @ (p.T-o.T) + o.T).T)
+
+
 def get_outbox(layerdata):
     x_vals = np.hstack((layerdata[:, 0], layerdata[:, 2]))
     y_vals = np.hstack((layerdata[:, 1], layerdata[:, 3]))

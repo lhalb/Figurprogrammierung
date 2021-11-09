@@ -10,7 +10,6 @@ Code für Umwandlung:
     pyuic5 -x template.ui -o template.py
 
 '''
-import sys
 from PyQt5 import QtWidgets, QtGui
 from gui import startGUI, plotting, building, resting, multiImport
 from gui import boxes as BOX
@@ -336,7 +335,7 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
                     conv_arr_end = cli.convert_to_volt_rel(arr_end, build_dimension*2)
 
                     # Füge beide zusammen
-                    rp_arr = np.hstack((conv_arr_strt, conv_arr_end))
+                    rp_arr = cli.rotate(np.hstack((conv_arr_strt, conv_arr_end)), degrees=270)
 
                     vec_rast = cli.generate_hatch_data(rp_arr,
                                                        rest=True,
@@ -357,7 +356,8 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
                 arr_strt = cli.convert_to_volt_abs(arrow[:, :2], build_dimension)
                 arr_end = cli.convert_to_volt_rel(arrow[:, 2:], build_dimension*2)
 
-                arrow_conv = np.hstack((arr_strt, arr_end))
+                # Fuege die Start- und Endpunkte zusammen und rotiere alle Punkte um 90° im Uhrzeigersinn
+                arrow_conv = cli.rotate(np.hstack((arr_strt, arr_end)), degrees=270)
                 if fig_type == 'contours':
                     vec = cli.generate_contour_data(arrow_conv,
                                                     v=v_contour,
