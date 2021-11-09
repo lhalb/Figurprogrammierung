@@ -11,7 +11,7 @@ Code für Umwandlung:
 
 '''
 from PyQt5 import QtWidgets, QtGui
-from gui import startGUI, plotting, building, resting, multiImport
+from gui import startGUI, plotting, building, resting, multiImport, plotbxy
 from gui import boxes as BOX
 import os
 from lib import cli_converter as cli
@@ -51,6 +51,7 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
         self.but_convert_cli.clicked.connect(self.save_vector_figures)
         self.but_buildgenerator.clicked.connect(self.open_buildgenerator)
         self.but_multi_import.clicked.connect(self.open_multi_import)
+        self.but_multiplot_bxy.clicked.connect(self.open_multiplot_bxy)
 
     def get_proc_layers(self):
         def max_or_min(vals, max_val, min_val=0):
@@ -379,6 +380,10 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
 
     def debug(self, hidden=False):
         return
+
+    def open_multiplot_bxy(self):
+        mp = plotbxy.XyPlot()
+        mp.exec_()
 
     def plot_bxy(self):
         bxy_data = bxy.convert_bxy(self.txt_infile.text())

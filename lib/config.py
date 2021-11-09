@@ -19,7 +19,6 @@ def save_config(fname, data):
 def load_parameters(dest, filename='para.ini'):
     config = configparser.ConfigParser()
     fname = dest + '/' + filename
-    print(fname)
     config.read(fname)
     return config
 

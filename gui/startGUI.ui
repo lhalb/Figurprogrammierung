@@ -24,23 +24,48 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QPushButton" name="but_multi_import">
-        <property name="font">
-         <font>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
+       <layout class="QGridLayout" name="gridLayout_8">
+        <property name="topMargin">
+         <number>0</number>
         </property>
-        <property name="toolTip">
-         <string>Tool, um mehrere CLI-Dateien gleichzeitig zu konvertieren</string>
-        </property>
-        <property name="text">
-         <string>Import multiple CLI-Files</string>
-        </property>
-        <property name="shortcut">
-         <string>Ctrl+Shift+O</string>
-        </property>
-       </widget>
+        <item row="0" column="0" colspan="2">
+         <widget class="QPushButton" name="but_multi_import">
+          <property name="font">
+           <font>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="toolTip">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Tool, um mehrere CLI-Dateien gleichzeitig zu konvertieren	STRG + SHIFT + O&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="text">
+           <string>Import multiple CLI-Files</string>
+          </property>
+          <property name="shortcut">
+           <string>Ctrl+Shift+O</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <widget class="QPushButton" name="but_multiplot_bxy">
+          <property name="font">
+           <font>
+            <italic>true</italic>
+           </font>
+          </property>
+          <property name="toolTip">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Öffnet den Dialog, um mehrere Figurdateien zu plotten.	STRG + SHIFT + P&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="text">
+           <string>Plot .bxy</string>
+          </property>
+          <property name="shortcut">
+           <string>Ctrl+Shift+P</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout">
@@ -839,13 +864,13 @@
                  </size>
                 </property>
                 <property name="toolTip">
-                 <string>Öffnet den Dialog zum Hinzufügen von Rastpositionen zur Schicht</string>
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Öffnet den Dialog zum Hinzufügen von Rastpositionen zur Schicht		STRG + R&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                 <property name="text">
                  <string>Rast-Dialog</string>
                 </property>
                 <property name="shortcut">
-                 <string>Ctrl+P</string>
+                 <string>Ctrl+R</string>
                 </property>
                </widget>
               </item>
@@ -901,7 +926,7 @@ CLI --&gt; .bxy</string>
                  </size>
                 </property>
                 <property name="toolTip">
-                 <string>Öffnet den PLotdialog zum PLotten der Schichten</string>
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Öffnet den Plotdialog zum Plotten der Schichten	STRG + P&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                 <property name="text">
                  <string>Plot-Dialog</string>
@@ -1033,7 +1058,7 @@ CLI --&gt; .bxy</string>
          </font>
         </property>
         <property name="toolTip">
-         <string>Öffnet den Dialog, um Figuren für Baujob zu erstellen</string>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Öffnet den Dialog, um Figuren für Baujob zu erstellen	STRG + B&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="text">
          <string>Buildgenerator</string>

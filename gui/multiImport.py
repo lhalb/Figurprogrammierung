@@ -37,14 +37,9 @@ class MultiImport(QtWidgets.QDialog, mIG.Ui_Dialog):
         folder = hF.get_foldername(ini_file)
 
         para = cfg.load_parameters(folder, filename=hF.get_file_with_extension(ini_file))
-
-        tab = self.table_parameters
-        tab.setRowCount(len(para.sections()))
-
-        for sec in para.sections():
-            for each_key, each_item in para.items(sec):
-
-
+        fl = para.sections()
+        self.write_to_table(filelist=fl, params=para)
+        BOX.show_info_box('Daten erfolgreich importiert')
 
     def save_settings(self):
         outfolder = QtWidgets.QFileDialog.getExistingDirectory(self, 'Wo sollen die Einstellungen gespeichert werden?')
@@ -74,7 +69,7 @@ class MultiImport(QtWidgets.QDialog, mIG.Ui_Dialog):
 
         BOX.show_info_box('Einstellungen erfolgreich gespeichert')
 
-    def write_to_table(self, filelist=None, params=None):
+    def write_to_table(self, filelist, params=None):
         tab = self.table_parameters
         tab.setRowCount(len(filelist))
         if not params:
