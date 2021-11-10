@@ -42,7 +42,8 @@ class MultiImport(QtWidgets.QDialog, mIG.Ui_Dialog):
         BOX.show_info_box('Daten erfolgreich importiert')
 
     def save_settings(self):
-        outfolder = QtWidgets.QFileDialog.getExistingDirectory(self, 'Wo sollen die Einstellungen gespeichert werden?')
+        outfolder = QtWidgets.QFileDialog.getSaveFileName(self, 'Wo sollen die Einstellungen gespeichert werden?',
+                                                          '', 'CLI-Files (*.cli)')[0]
         if not outfolder:
             return
 
@@ -199,9 +200,10 @@ class MultiImport(QtWidgets.QDialog, mIG.Ui_Dialog):
                         arrow = arr[lay]
 
                     arr_strt = cli.convert_to_volt_abs(arrow[:, :2], build_dimension)
-                    arr_end = cli.convert_to_volt_rel(arrow[:, 2:], build_dimension * 2)
+                    arr_end = cli.convert_to_volt_rel(arrow[:, 2:], build_dimension)
 
-                    arrow_conv = cli.rotate(np.hstack((arr_strt, arr_end)), degrees=270)
+                    # arrow_conv = cli.rotate(np.hstack((arr_strt, arr_end)), degrees=270)
+                    arrow_conv = np.hstack((arr_strt, arr_end))
                     if fig_type == 'contours':
                         vec = cli.generate_contour_data(arrow_conv,
                                                         v=v_contour,

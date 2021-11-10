@@ -30,7 +30,7 @@ class XyPlot(QtWidgets.QDialog, pG.Ui_Dialog):
         lw = self.lst_files
         files = [str(lw.item(i).text()) for i in range(lw.count())]
 
-        cli.init_plot()
+        cli.init_plot(unit='V', x_lim=(-1, 1), y_lim=(-1, 1))
         if len(files) > 1:
             alpha = 0.5
         else:

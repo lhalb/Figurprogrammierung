@@ -333,10 +333,11 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
                     conv_arr_strt = cli.convert_to_volt_abs(arr_strt, build_dimension)
                     # nehme die Richtungsvektoren
                     arr_end = rp_arrows[:, :, 2:].reshape(len(rp_arrows), -1)
-                    conv_arr_end = cli.convert_to_volt_rel(arr_end, build_dimension*2)
+                    conv_arr_end = cli.convert_to_volt_rel(arr_end, build_dimension)
 
                     # Füge beide zusammen
-                    rp_arr = cli.rotate(np.hstack((conv_arr_strt, conv_arr_end)), degrees=270)
+                    # rp_arr = cli.rotate(np.hstack((conv_arr_strt, conv_arr_end)), degrees=270)
+                    rp_arr = np.hstack((conv_arr_strt, conv_arr_end))
 
                     vec_rast = cli.generate_hatch_data(rp_arr,
                                                        rest=True,
@@ -355,10 +356,11 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
                     continue
 
                 arr_strt = cli.convert_to_volt_abs(arrow[:, :2], build_dimension)
-                arr_end = cli.convert_to_volt_rel(arrow[:, 2:], build_dimension*2)
+                arr_end = cli.convert_to_volt_rel(arrow[:, 2:], build_dimension)
 
                 # Fuege die Start- und Endpunkte zusammen und rotiere alle Punkte um 90° im Uhrzeigersinn
-                arrow_conv = cli.rotate(np.hstack((arr_strt, arr_end)), degrees=270)
+                # arrow_conv = cli.rotate(np.hstack((arr_strt, arr_end)), degrees=270)
+                arrow_conv = np.hstack((arr_strt, arr_end))
                 if fig_type == 'contours':
                     vec = cli.generate_contour_data(arrow_conv,
                                                     v=v_contour,
@@ -388,7 +390,7 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
     def plot_bxy(self):
         bxy_data = bxy.convert_bxy(self.txt_infile.text())
 
-        cli.init_plot()
+        cli.init_plot(unit='V', x_lim=(-1, 1), y_lim=(-1, 1))
         cli.plot_arrows(bxy_data)
         cli.show_plot()
 

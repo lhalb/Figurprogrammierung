@@ -144,11 +144,16 @@ def make_rest_positions(d, v=100, time=2, rp_min=0.3, rp_max=0.7, exact=4, verbo
     return rp_points, points.reshape(-1, 4)
 
 
-def init_plot(size=4, unit='mm', layer=0):
+def init_plot(size=4, unit='mm', layer=0, x_lim=(0, 150), y_lim=(0, 150), show_outlines=True):
     plt.figure(figsize=(size, size))
     plt.xlabel(f'X in [{unit}]')
     plt.ylabel(f'Y in [{unit}]')
     plt.title(f'Strahllaufwege Schicht {layer}')
+    plt.xlim(x_lim)
+    plt.ylim(y_lim)
+    if show_outlines:
+        plt.vlines(x_lim, y_lim[0], y_lim[1], colors='k', ls='-', alpha=0.5)
+        plt.hlines(y_lim, x_lim[0], x_lim[1], colors='k', ls='-', alpha=0.5)
 
 
 def show_plot(save=False, sdir=None, s_name=None, s_only=False):
@@ -225,7 +230,7 @@ def combine_arrays(arrays):
 
 
 def write_data(fname, sdir, data):
-    # falls das Verezichnis noch nicht existiert
+    # falls das Verzeichnis noch nicht existiert
     hF.create_directory_if_needed(sdir)
 
     dest = os.path.join(sdir, fname)
