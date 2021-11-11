@@ -28,6 +28,15 @@ class Ui_Dialog(object):
         self.horizontalLayout.addWidget(self.but_load_files)
         spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem)
+        self.but_del_entry = QtWidgets.QPushButton(Dialog)
+        self.but_del_entry.setObjectName("but_del_entry")
+        self.horizontalLayout.addWidget(self.but_del_entry)
+        spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout.addItem(spacerItem1)
+        spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout.addItem(spacerItem2)
+        spacerItem3 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout.addItem(spacerItem3)
         self.but_plot = QtWidgets.QPushButton(Dialog)
         font = QtGui.QFont()
         font.setBold(True)
@@ -37,6 +46,8 @@ class Ui_Dialog(object):
         self.horizontalLayout.addWidget(self.but_plot)
         self.verticalLayout.addLayout(self.horizontalLayout)
         self.lst_files = QtWidgets.QListWidget(Dialog)
+        self.lst_files.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
+        self.lst_files.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
         self.lst_files.setObjectName("lst_files")
         self.verticalLayout.addWidget(self.lst_files)
 
@@ -48,6 +59,8 @@ class Ui_Dialog(object):
         Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
         self.but_load_files.setText(_translate("Dialog", "Load\n"
 "Files"))
+        self.but_del_entry.setText(_translate("Dialog", "Delete\n"
+"Listentry"))
         self.but_plot.setText(_translate("Dialog", "Plot\n"
 ".bxy"))
 

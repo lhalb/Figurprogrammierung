@@ -15,6 +15,16 @@ class XyPlot(QtWidgets.QDialog, pG.Ui_Dialog):
     def call_buttons(self):
         self.but_load_files.clicked.connect(self.open_files)
         self.but_plot.clicked.connect(self.plot_files)
+        self.but_del_entry.clicked.connect(self.remove_items)
+
+    def remove_items(self):
+        lw = self.lst_files
+        sel_items = lw.selectedItems()
+        if not sel_items:
+            return
+        for item in sel_items:
+            lw.takeItem(lw.row(item))
+
 
     def open_files(self):
         files = QtWidgets.QFileDialog.getOpenFileNames(self, 'Wähle die .bxy Dateien aus.', '',
