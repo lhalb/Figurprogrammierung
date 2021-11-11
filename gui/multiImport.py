@@ -42,20 +42,18 @@ class MultiImport(QtWidgets.QDialog, mIG.Ui_Dialog):
         BOX.show_info_box('Daten erfolgreich importiert')
 
     def save_settings(self):
-        outfolder = QtWidgets.QFileDialog.getSaveFileName(self, 'Wo sollen die Einstellungen gespeichert werden?',
-                                                          '', 'CLI-Files (*.cli)')[0]
-        if not outfolder:
+        outfile = QtWidgets.QFileDialog.getSaveFileName(self, 'Wo sollen die Einstellungen gespeichert werden?',
+                                                        'multi_settings.ini', 'INI-Files (*.ini)')[0]
+        if not outfile:
             return
 
-        fname = 'multi_settings.ini'
-
-        file_exists = hF.check_for_existing_file(outfolder + '/' + fname)
+        file_exists = hF.check_for_existing_file(outfile)
         if file_exists:
             ret_val = BOX.show_msg_box('Datei existiert bereits.\nÜberschreiben?')
             if not ret_val:
                 return
             else:
-                os.remove(outfolder + '/' + fname)
+                os.remove(outfile)
 
         tab = self.table_parameters
         para = {}
@@ -65,6 +63,9 @@ class MultiImport(QtWidgets.QDialog, mIG.Ui_Dialog):
             para[secname] = {}
             for j, s in enumerate(settings):
                 para[secname][s] = tab.item(i, j).text()
+
+        outfolder = hF.get_foldername(outfile)
+        fname = hF.get_file_with_extension(outfile)
 
         cfg.save_parameters(para, outfolder, filename=fname)
 
