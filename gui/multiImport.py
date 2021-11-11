@@ -83,7 +83,7 @@ class MultiImport(QtWidgets.QDialog, mIG.Ui_Dialog):
         else:
             for i, sec in enumerate(params.keys()):
                 for j, par in enumerate(params[sec].keys()):
-                    tab.setItem(i, j, QTI(str(params[sec][par])))
+                    tab.setItem(i-1, j, QTI(str(params[sec][par])))
 
     def get_save_directory(self):
         outfolder = QtWidgets.QFileDialog.getExistingDirectory(self, 'Wo sollen die Dateien gespeichert werden?')
