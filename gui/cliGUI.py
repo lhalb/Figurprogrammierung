@@ -323,7 +323,7 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
 
         for fig_type in ['contours', 'hatches']:
             for lay in proc_layers:
-                l_name = cli_name + f'_{lay}_{fig_type}'
+                l_name = cli_name + f'_LAY-{lay}_{fig_type}'
 
                 outlist = []
                 if self.db.rp_arrows is not None:

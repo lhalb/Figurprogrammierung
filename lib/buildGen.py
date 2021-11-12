@@ -20,7 +20,7 @@ def process_folder_list(fl, param_data, b_directory=None, hatches_first=False, o
             all_files = os.listdir(fold)
 
             # Dateiname hat die Struktur >> CLI-Name_LAYER_contour/hatch.bxy <<
-            substring = f'_{current_layer}_'
+            substring = f'_LAY-{current_layer}_'
             # Finde alle Dateien, die im aktuellen Ordner liegen sollen
             matching_figures = [string for string in all_files if substring in string and '.bxy' in string]
             # Falls der Ordner keine Figuren mehr in diesem Layer enthält
