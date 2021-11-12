@@ -192,7 +192,7 @@ class MultiImport(QtWidgets.QDialog, mIG.Ui_Dialog):
 
             for fig_type in figs:
                 for lay in range(lays):
-                    l_name = cli_name + f'_{lay}_{fig_type}'
+                    l_name = cli_name + f'_LAY-{lay}_{fig_type}'
 
                     outlist = []
                     if fig_type == 'contours':
