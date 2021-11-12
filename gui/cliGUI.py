@@ -368,7 +368,7 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
                 else:
                     vec = cli.generate_hatch_data(arrow_conv,
                                                   v=v_hatch,
-                                                  pvz=pvz_contour)
+                                                  pvz=pvz_hatch)
                 outlist.append(vec)
 
                 output = cli.generate_output(outlist)
