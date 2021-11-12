@@ -212,7 +212,7 @@ class MultiImport(QtWidgets.QDialog, mIG.Ui_Dialog):
                     else:
                         vec = cli.generate_hatch_data(arrow_conv,
                                                       v=v_hatch,
-                                                      pvz=pvz_contour)
+                                                      pvz=pvz_hatch)
                     outlist.append(vec)
 
                     output = cli.generate_output(outlist)
