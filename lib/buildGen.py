@@ -76,7 +76,7 @@ def create_new_section(nr, cl, figures, params, figure_names):
     dimx = params[0]['plate_size']
     dimy = params[0]['plate_size']
 
-    stringlist = [f'_par_field[{nr},0] = SET({cl+1}, -{dimx}, -{dimy}, {figures})']
+    stringlist = [f'_par_field[{nr},0] = SET({cl+1}, {dimx}, {dimy}, {figures})']
     par = -1
     folder_before = ''
     for f in range(figures):
