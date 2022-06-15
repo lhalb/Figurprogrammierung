@@ -2,3 +2,12 @@ dist/
 build/
 *.exe
 venv/
+/data/
+/output/
+/.idea
+para.ini
+*.cli
+*.pyc
+*.b*
+*cnc_params*
+*settings.ini

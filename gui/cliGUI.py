@@ -326,6 +326,7 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
                 l_name = cli_name + f'_LAY-{lay}_{fig_type}'
 
                 outlist = []
+                # convert restpositions
                 if self.db.rp_arrows is not None:
                     rp_arrows = self.db.rp_arrows[lay]
                     # nehme nur die Startpunkte jedes Pfeils
@@ -348,10 +349,12 @@ class MyApp(QtWidgets.QMainWindow, startGUI.Ui_MainWindow):
                     pass
 
                 if self.db.pl_arrows is not None or self.db.arrows is not None:
-                    if fig_type == 'contours':
+                    if fig_type == 'contours' and self.db.pl_arrows is not None:
                         arrow = self.db.pl_arrows[lay]
-                    else:
+                    if fig_type == 'hatches' and self.db.arrows is not None:
                         arrow = self.db.arrows[lay]
+                    else:
+                        continue
                 else:
                     continue
 
